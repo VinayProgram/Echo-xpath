@@ -1,0 +1,58 @@
+/* eslint-disable react-refresh/only-export-components */
+import React, { createContext, useContext, useRef, useMemo, type ReactNode } from "react";
+import * as THREE from "three";
+import * as YUKA from "yuka";
+
+interface GameContextType {
+  characterRef: React.RefObject<THREE.Group | null>;
+  entityManager: YUKA.EntityManager;
+  playerVehicle: YUKA.Vehicle;
+  obstacles: YUKA.GameEntity[];
+}
+
+const GameContext = createContext<GameContextType | undefined>(undefined);
+
+export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const characterRef = useRef<THREE.Group>(null);
+  
+  // Array to keep track of game obstacles for behaviors (like obstacle avoidance)
+  const obstacles = useMemo<YUKA.GameEntity[]>(() => [], []);
+  
+  // Initialize YUKA core components
+  const entityManager = useMemo(() => new YUKA.EntityManager(), []);
+  const playerVehicle = useMemo(() => {
+    const vehicle = new YUKA.Vehicle();
+    vehicle.maxSpeed = 2;
+    vehicle.maxForce = 10;
+    vehicle.mass = 1;
+    // @ts-expect-error - radius is missing in YUKA Vehicle types
+    vehicle.radius = 0.5;
+    return vehicle;
+  }, []);
+
+  // Add vehicle to manager once
+  React.useEffect(() => {
+    entityManager.add(playerVehicle);
+  }, [entityManager, playerVehicle]);
+
+  const value: GameContextType = {
+    characterRef,
+    entityManager,
+    playerVehicle,
+    obstacles,
+  };
+
+  return (
+    <GameContext.Provider value={value}>
+      {children}
+    </GameContext.Provider>
+  );
+};
+
+export const useGame = () => {
+  const context = useContext(GameContext);  
+  if (context === undefined) {
+    throw new Error("useGame must be used within a GameProvider. Wrap your app in <GameProvider />.");
+  }
+  return context;
+};
