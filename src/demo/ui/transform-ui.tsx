@@ -4,6 +4,8 @@ import { useGameStore } from '../store/use-game-store';
 const TransformUI: React.FC = () => {
     const isTransforming = useGameStore((state) => state.isTransforming);
     const setIsTransforming = useGameStore((state) => state.setIsTransforming);
+    const cameraMode = useGameStore((state) => state.cameraMode);
+    const setCameraMode = useGameStore((state) => state.setCameraMode);
 
     return (
         <div style={{
@@ -31,7 +33,7 @@ const TransformUI: React.FC = () => {
                 textTransform: 'uppercase',
                 opacity: 0.8
             }}>
-                Editor Controls
+                Controls
             </div>
 
             <label style={{
@@ -39,33 +41,65 @@ const TransformUI: React.FC = () => {
                 alignItems: 'center',
                 gap: '10px',
                 cursor: 'pointer',
-                fontSize: '15px'
+                fontSize: '14px'
             }}>
                 <div
                     onClick={() => setIsTransforming(!isTransforming)}
                     style={{
-                        width: '44px',
-                        height: '24px',
+                        width: '36px',
+                        height: '20px',
                         backgroundColor: isTransforming ? '#3b82f6' : 'rgba(255, 255, 255, 0.2)',
-                        borderRadius: '12px',
+                        borderRadius: '10px',
                         position: 'relative',
                         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                         border: '1px solid rgba(255, 255, 255, 0.1)'
                     }}
                 >
                     <div style={{
-                        width: '18px',
-                        height: '18px',
+                        width: '14px',
+                        height: '14px',
                         backgroundColor: 'white',
                         borderRadius: '50%',
                         position: 'absolute',
                         top: '2px',
-                        left: isTransforming ? '22px' : '2px',
+                        left: isTransforming ? '18px' : '2px',
                         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
                     }} />
                 </div>
                 <span>Transform Mode</span>
+            </label>
+
+            <label style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                cursor: 'pointer',
+                fontSize: '14px'
+            }}>
+                <div
+                    onClick={() => setCameraMode(cameraMode === 'orbit' ? 'firstPerson' : 'orbit')}
+                    style={{
+                        width: '36px',
+                        height: '20px',
+                        backgroundColor: cameraMode === 'firstPerson' ? '#10b981' : 'rgba(255, 255, 255, 0.2)',
+                        borderRadius: '10px',
+                        position: 'relative',
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)'
+                    }}
+                >
+                    <div style={{
+                        width: '14px',
+                        height: '14px',
+                        backgroundColor: 'white',
+                        borderRadius: '50%',
+                        position: 'absolute',
+                        top: '2px',
+                        left: cameraMode === 'firstPerson' ? '18px' : '2px',
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    }} />
+                </div>
+                <span>First Person View</span>
             </label>
 
             {isTransforming && (

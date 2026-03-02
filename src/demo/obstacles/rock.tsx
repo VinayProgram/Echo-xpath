@@ -7,7 +7,7 @@ import { GLTFLoader } from 'three-stdlib'
 import { useGameStore } from '../store/use-game-store'
 
 
-const RockObstacles = ({ count = 2 }) => {
+const RockObstacles = ({ count = 40 }) => {
     const { entityManager, obstacles, setObstacles } = useGame()
     const scene = useThree((state) => state.scene)
     const gltf = useLoader(GLTFLoader, '/desert_rock.glb')

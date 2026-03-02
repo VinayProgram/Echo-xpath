@@ -1,16 +1,22 @@
-import { useMemo, useRef } from 'react'
+import React, { useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import * as YUKA from 'yuka'
 import { useNavmeshHelper } from './graph.helper'
 import { useGame } from '../context/game-context'
 import { useGameStore } from '../store/use-game-store'
+import { useTexture } from '@react-three/drei'
 
 
 const Navmesh = () => {
-  const width = 30
-  const height = 30
-  const segments = 100
+  const width = 50
+  const height = 50
+  const segments = 10
   const { playerVehicle, obstacles } = useGame()
+  const setDebugPoints = useGameStore((state) => state.setDebugPoints)
+
+  const texture = useTexture('/land.jpg')
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping
+
   const isTransforming = useGameStore((state) => state.isTransforming);
   const ref = useRef<THREE.Mesh>(null)
   const geometry = useMemo(() => {
@@ -20,12 +26,11 @@ const Navmesh = () => {
   }, [])
 
 
-  const { navigationMesh: navMesh } = useNavmeshHelper(geometry)
-
+  const { navigationMesh: navMesh, debugPoints } = useNavmeshHelper(geometry)
+  React.useMemo(() => setDebugPoints(debugPoints), [debugPoints])
 
   const gotoTargetPath = (target: THREE.Vector3) => {
     if (!navMesh) return
-    console.log(obstacles)
     // Use playerVehicle's current position as the start of pathfinding
     const start = playerVehicle.position
     const end = new YUKA.Vector3(target.x, target.y, target.z)
@@ -49,7 +54,7 @@ const Navmesh = () => {
     playerVehicle.steering.clear()
     playerVehicle.steering.add(new YUKA.ObstacleAvoidanceBehavior(obstacles.map(x => x.entity)))
     playerVehicle.steering.add(new YUKA.FollowPathBehavior(path, 0.5))
-    // playerVehicle.steering.add(new YUKA.ArriveBehavior(end, 0.5))
+    playerVehicle.steering.add(new YUKA.ArriveBehavior(end, 0.5))
 
 
   }
@@ -65,7 +70,7 @@ const Navmesh = () => {
         }}
       >
         <meshStandardMaterial
-          color="Grey"
+          map={texture}
           side={THREE.DoubleSide}
         />
       </mesh>
@@ -78,4 +83,3 @@ const Navmesh = () => {
 
 
 export default Navmesh
-
