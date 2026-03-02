@@ -40,7 +40,7 @@ const RockObstacles = ({ count = 40 }) => {
                 model.position.copy(pos)
                 const entity = new YUKA.GameEntity()
                 entity.position.set(pos.x, pos.y, pos.z)
-                entity.boundingRadius = 2
+                entity.boundingRadius = 1.5
                 setObstacles((e) => [...e, {
                     entity: entity,
                     mesh: model
