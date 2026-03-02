@@ -9,6 +9,7 @@ interface GameContextType {
   playerVehicle: YUKA.Vehicle;
   obstacles: YUKA.GameEntity[];
   setObstacles: React.Dispatch<React.SetStateAction<YUKA.GameEntity[]>>;
+  obstacleMeshRef: React.RefObject<THREE.Group[]>;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -16,7 +17,7 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const characterRef = useRef<THREE.Group>(null);
   const [obstacles, setObstacles] = useState<YUKA.GameEntity[]>([]);
-
+  const obstacleMeshRef = useRef<THREE.Group[]>([]);
   // Initialize YUKA core components
   const entityManager = useMemo(() => new YUKA.EntityManager(), []);
   const playerVehicle = useMemo(() => {
@@ -37,7 +38,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     entityManager,
     playerVehicle,
     obstacles,
-    setObstacles
+    setObstacles,
+    obstacleMeshRef
   };
 
   return (

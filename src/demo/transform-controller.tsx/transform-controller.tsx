@@ -3,6 +3,7 @@ import { TransformControls } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useGameStore } from '../store/use-game-store'
+import { useGame } from '../context/game-context'
 
 interface TransformControllerProps {
     onSelect?: (object: THREE.Object3D | null) => void;
@@ -13,7 +14,7 @@ const TransformController: React.FC<TransformControllerProps> = ({ onSelect }) =
     const isTransforming = useGameStore((state) => state.isTransforming);
     const [selectedObject, setSelectedObject] = useState<THREE.Object3D | null>(null);
     const [mode, setMode] = useState<'translate' | 'rotate' | 'scale'>('translate');
-
+    const { obstacles, obstacleMeshRef } = useGame()
     // Deselect if transformation mode is turned off
     useEffect(() => {
         if (!isTransforming) {
@@ -35,7 +36,7 @@ const TransformController: React.FC<TransformControllerProps> = ({ onSelect }) =
             const clickRaycaster = new THREE.Raycaster();
             clickRaycaster.setFromCamera(clickMouse, camera);
 
-            const intersects = clickRaycaster.intersectObjects(scene.children, true);
+            const intersects = clickRaycaster.intersectObjects(obstacleMeshRef.current, true);
 
             const validIntersections = intersects.filter(intersect => {
                 let obj: THREE.Object3D | null = intersect.object;
