@@ -5,6 +5,7 @@ import { useNavmeshHelper } from './graph.helper'
 import { useGame } from '../context/game-context'
 import { useGameStore } from '../store/use-game-store'
 
+
 const Navmesh = () => {
   const width = 30
   const height = 30
@@ -18,7 +19,9 @@ const Navmesh = () => {
     return geo
   }, [])
 
+
   const { navigationMesh: navMesh, debugPoints } = useNavmeshHelper(geometry)
+
 
   const gotoTargetPath = (target: THREE.Vector3) => {
     if (!navMesh) return
@@ -27,21 +30,27 @@ const Navmesh = () => {
     const start = playerVehicle.position
     const end = new YUKA.Vector3(target.x, target.y, target.z)
 
+
     const pathPoints = navMesh.findPath(start, end)
+
 
     if (!pathPoints || pathPoints.length === 0) return
 
+
     const path = new YUKA.Path()
+
 
     for (const point of pathPoints) {
       path.add(new YUKA.Vector3(point.x, point.y, point.z))
     }
 
+
     // Clear existing steering behaviors and add new follow path behavior
     playerVehicle.steering.clear()
-    playerVehicle.steering.add(new YUKA.ObstacleAvoidanceBehavior(obstacles))
+    playerVehicle.steering.add(new YUKA.ObstacleAvoidanceBehavior(obstacles.map(x => x.entity)))
     playerVehicle.steering.add(new YUKA.FollowPathBehavior(path, 0.5))
     // playerVehicle.steering.add(new YUKA.ArriveBehavior(end, 0.5))
+
 
   }
   return (
@@ -62,8 +71,11 @@ const Navmesh = () => {
       </mesh>
       {/* {debugPoints && <primitive object={debugPoints} />} */}
 
+
     </>
   )
 }
 
+
 export default Navmesh
+

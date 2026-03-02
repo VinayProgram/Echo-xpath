@@ -3,20 +3,32 @@ import React, { createContext, useContext, useRef, useMemo, useState, type React
 import * as THREE from "three";
 import * as YUKA from "yuka";
 
+
 interface GameContextType {
   characterRef: React.RefObject<THREE.Group | null>;
   entityManager: YUKA.EntityManager;
   playerVehicle: YUKA.Vehicle;
-  obstacles: YUKA.GameEntity[];
-  setObstacles: React.Dispatch<React.SetStateAction<YUKA.GameEntity[]>>;
+  obstacles: {
+    entity: YUKA.GameEntity,
+    mesh: THREE.Object3D
+  }[];
+  setObstacles: React.Dispatch<React.SetStateAction<{
+    entity: YUKA.GameEntity,
+    mesh: THREE.Object3D
+  }[]>>;
   obstacleMeshRef: React.RefObject<THREE.Group[]>;
 }
 
+
 const GameContext = createContext<GameContextType | undefined>(undefined);
+
 
 export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const characterRef = useRef<THREE.Group>(null);
-  const [obstacles, setObstacles] = useState<YUKA.GameEntity[]>([]);
+  const [obstacles, setObstacles] = useState<{
+    entity: YUKA.GameEntity,
+    mesh: THREE.Object3D
+  }[]>([]);
   const obstacleMeshRef = useRef<THREE.Group[]>([]);
   // Initialize YUKA core components
   const entityManager = useMemo(() => new YUKA.EntityManager(), []);
@@ -28,10 +40,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return vehicle;
   }, []);
 
+
   // Add vehicle to manager once
   React.useEffect(() => {
     entityManager.add(playerVehicle);
   }, [entityManager, playerVehicle]);
+
 
   const value: GameContextType = {
     characterRef,
@@ -42,12 +56,14 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     obstacleMeshRef
   };
 
+
   return (
     <GameContext.Provider value={value}>
       {children}
     </GameContext.Provider>
   );
 };
+
 
 export const useGame = () => {
   const context = useContext(GameContext);
@@ -56,3 +72,6 @@ export const useGame = () => {
   }
   return context;
 };
+
+
+

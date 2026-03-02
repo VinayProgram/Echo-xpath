@@ -5,9 +5,11 @@ import * as THREE from 'three'
 import { useGameStore } from '../store/use-game-store'
 import { useGame } from '../context/game-context'
 
+
 interface TransformControllerProps {
     onSelect?: (object: THREE.Object3D | null) => void;
 }
+
 
 const TransformController: React.FC<TransformControllerProps> = ({ onSelect }) => {
     const { scene, camera, gl } = useThree();
@@ -15,6 +17,7 @@ const TransformController: React.FC<TransformControllerProps> = ({ onSelect }) =
     const [selectedObject, setSelectedObject] = useState<THREE.Object3D | null>(null);
     const [mode, setMode] = useState<'translate' | 'rotate' | 'scale'>('translate');
     const { obstacles, obstacleMeshRef } = useGame()
+
     // Deselect if transformation mode is turned off
     useEffect(() => {
         if (!isTransforming) {
@@ -23,20 +26,25 @@ const TransformController: React.FC<TransformControllerProps> = ({ onSelect }) =
         }
     }, [isTransforming, onSelect]);
 
+
     // Handle clicks to select objects
     useEffect(() => {
         if (!isTransforming) return;
+
 
         const handleClick = (event: MouseEvent) => {
             const rect = gl.domElement.getBoundingClientRect();
             const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
             const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
+
             const clickMouse = new THREE.Vector2(x, y);
             const clickRaycaster = new THREE.Raycaster();
             clickRaycaster.setFromCamera(clickMouse, camera);
 
-            const intersects = clickRaycaster.intersectObjects(obstacleMeshRef.current, true);
+
+            const intersects = clickRaycaster.intersectObjects(obstacles.map((x) => x.mesh), true);
+
 
             const validIntersections = intersects.filter(intersect => {
                 let obj: THREE.Object3D | null = intersect.object;
@@ -48,11 +56,14 @@ const TransformController: React.FC<TransformControllerProps> = ({ onSelect }) =
             });
 
 
+
+
             if (validIntersections.length > 0) {
                 let target = validIntersections[0].object;
                 while (target.parent && target.parent !== scene && target.parent.type !== 'Scene') {
                     target = target.parent;
                 }
+
 
                 setSelectedObject(target);
                 if (onSelect) onSelect(target);
@@ -61,6 +72,7 @@ const TransformController: React.FC<TransformControllerProps> = ({ onSelect }) =
                 if (onSelect) onSelect(null);
             }
         };
+
 
         const handleKeyDown = (event: KeyboardEvent) => {
             switch (event.key.toLowerCase()) {
@@ -71,14 +83,17 @@ const TransformController: React.FC<TransformControllerProps> = ({ onSelect }) =
             }
         };
 
+
         gl.domElement.addEventListener('click', handleClick);
         window.addEventListener('keydown', handleKeyDown);
+
 
         return () => {
             gl.domElement.removeEventListener('click', handleClick);
             window.removeEventListener('keydown', handleKeyDown);
         };
     }, [isTransforming]);
+
 
     return (
         <>
@@ -92,4 +107,6 @@ const TransformController: React.FC<TransformControllerProps> = ({ onSelect }) =
     )
 }
 
+
 export default TransformController;
+
