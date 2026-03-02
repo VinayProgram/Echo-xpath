@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import * as YUKA from 'yuka'
 import { useNavmeshHelper } from './graph.helper'
@@ -20,7 +20,7 @@ const Navmesh = () => {
   }, [])
 
 
-  const { navigationMesh: navMesh, debugPoints } = useNavmeshHelper(geometry)
+  const { navigationMesh: navMesh } = useNavmeshHelper(geometry)
 
 
   const gotoTargetPath = (target: THREE.Vector3) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo } from 'react'
 import * as THREE from 'three'
 import * as YUKA from 'yuka'
 import { useGame } from '../context/game-context'

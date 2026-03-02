@@ -16,7 +16,7 @@ const TransformController: React.FC<TransformControllerProps> = ({ onSelect }) =
     const isTransforming = useGameStore((state) => state.isTransforming);
     const [selectedObject, setSelectedObject] = useState<THREE.Object3D | null>(null);
     const [mode, setMode] = useState<'translate' | 'rotate' | 'scale'>('translate');
-    const { obstacles, obstacleMeshRef } = useGame()
+    const { obstacles } = useGame()
 
     // Deselect if transformation mode is turned off
     useEffect(() => {

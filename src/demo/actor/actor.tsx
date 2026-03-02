@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useGame } from '../context/game-context'
-import { useFrame, useLoader, useThree } from '@react-three/fiber'
+import { useFrame, useLoader } from '@react-three/fiber'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three-stdlib'
 import { useAnimations } from '@react-three/drei'
