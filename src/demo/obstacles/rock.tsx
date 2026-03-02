@@ -2,30 +2,23 @@ import React, { useRef, useEffect } from 'react'
 import * as THREE from 'three'
 import * as YUKA from 'yuka'
 import { useGame } from '../context/game-context'
+import { useLoader } from '@react-three/fiber'
+import { GLTFLoader } from 'three-stdlib'
 
 const RockObstacle = () => {
     const meshRef = useRef<THREE.Mesh>(null)
     const { entityManager, obstacles } = useGame()
+    const rock = useLoader(GLTFLoader, '/desert_rock.glb');
 
     useEffect(() => {
-        // Create YUKA entity for the obstacle
         const entity = new YUKA.GameEntity()
-        
-        // Define bounding volume for collision avoidance if needed
-        // For simplicity, we use the position provided in the mesh
         entity.position.set(2, 0, 2)
-        
-        // Sync the mesh with the entity
         entity.setRenderComponent(meshRef.current!, (entity, renderComponent) => {
-            meshRef.current?.geometry.computeBoundingBox()
             entity.boundingRadius = 2
             renderComponent.position.copy(entity.position)
         })
-
-        // Add to YUKA manager
         entityManager.add(entity)
-        
-        // Add to our context obstacles list
+
         obstacles.push(entity)
 
         return () => {
@@ -36,10 +29,9 @@ const RockObstacle = () => {
     }, [entityManager, obstacles])
 
     return (
-        <mesh ref={meshRef} position={[2, 0, 2]}>
-            <boxGeometry args={[1, 1, 1]} />
-            <meshStandardMaterial color={'blue'} />
-        </mesh>
+        <group ref={meshRef} scale={0.2}>
+            <primitive object={rock.scene} position={[2, -0.5, 2]} />
+        </group>
     )
 }
 

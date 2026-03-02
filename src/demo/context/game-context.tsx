@@ -14,19 +14,17 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const characterRef = useRef<THREE.Group>(null);
-  
+
   // Array to keep track of game obstacles for behaviors (like obstacle avoidance)
   const obstacles = useMemo<YUKA.GameEntity[]>(() => [], []);
-  
+
   // Initialize YUKA core components
   const entityManager = useMemo(() => new YUKA.EntityManager(), []);
   const playerVehicle = useMemo(() => {
     const vehicle = new YUKA.Vehicle();
-    vehicle.maxSpeed = 2;
-    vehicle.maxForce = 10;
+    vehicle.maxSpeed = 3;
+    vehicle.maxForce = 4;
     vehicle.mass = 1;
-    // @ts-expect-error - radius is missing in YUKA Vehicle types
-    vehicle.radius = 0.5;
     return vehicle;
   }, []);
 
@@ -50,7 +48,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 };
 
 export const useGame = () => {
-  const context = useContext(GameContext);  
+  const context = useContext(GameContext);
   if (context === undefined) {
     throw new Error("useGame must be used within a GameProvider. Wrap your app in <GameProvider />.");
   }

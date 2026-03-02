@@ -1,39 +1,55 @@
 import React, { useEffect } from 'react'
 import { useGame } from '../context/game-context'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useLoader } from '@react-three/fiber'
 import * as THREE from 'three'
+import { GLTFLoader } from 'three-stdlib'
+import { useAnimations } from '@react-three/drei'
 
 const Actor = () => {
     const { characterRef, entityManager, playerVehicle } = useGame();
+    const player = useLoader(GLTFLoader, '/cartoon_car.glb');
+    const { actions, names } = useAnimations(player.animations, characterRef);
 
     useEffect(() => {
         if (!characterRef.current) return;
-
-        // Sync visual with YUKA's world matrix
         playerVehicle.setRenderComponent(characterRef.current, (entity, renderComponent) => {
             // @ts-expect-error - matrix copy needed for sync
             (renderComponent as THREE.Group).matrix.copy(entity.worldMatrix);
         });
-
-        // Initialize position
         playerVehicle.position.set(0, 0, 0);
 
-        return () => {
-            playerVehicle.setRenderComponent(null, () => {});
+        if (names.length > 0) {
+            actions[names[0]]?.reset().fadeIn(0.5).play();
         }
-    }, [characterRef, playerVehicle]);
 
-    // Update YUKA's management in the frame loop
+        return () => {
+            playerVehicle.setRenderComponent(null, () => { });
+        }
+    }, [characterRef, playerVehicle, actions, names]);
+
+    // Update YUKA's management and sync animations in the frame loop
     useFrame((_, delta) => {
         entityManager.update(delta);
+
+        // Update animation speed based on vehicle velocity
+        const speed = playerVehicle.getSpeed();
+        if (names.length > 0) {
+            const currentAction = actions[names[0]];
+            if (currentAction) {
+                // Adjust animation playback speed relative to movement
+                currentAction.timeScale = speed * 2; // Adjust multiplier as needed
+                if (speed < 0.05) {
+                    currentAction.paused = true;
+                } else {
+                    currentAction.paused = false;
+                }
+            }
+        }
     });
 
     return (
-        <group ref={characterRef} matrixAutoUpdate={false}>
-            <mesh>
-                <boxGeometry args={[1, 1, 1]} />
-                <meshStandardMaterial color={'orange'} />
-            </mesh>
+        <group ref={characterRef} matrixAutoUpdate={false} position={[0, 0, 0]} >
+            <primitive object={player.scene} scale={0.5} rotation={[0, -Math.PI / 2, 0]} />
         </group>
     )
 }
