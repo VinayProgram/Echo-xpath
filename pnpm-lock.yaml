@@ -35,6 +35,9 @@ importers:
       yuka:
         specifier: ^0.7.8
         version: 0.7.8
+      zustand:
+        specifier: ^5.0.11
+        version: 5.0.11(@types/react@19.2.14)(react@19.2.4)(use-sync-external-store@1.6.0(react@19.2.4))
     devDependencies:
       '@eslint/js':
         specifier: ^9.39.1

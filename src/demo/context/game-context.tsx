@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useContext, useRef, useMemo, type ReactNode } from "react";
+import React, { createContext, useContext, useRef, useMemo, useState, type ReactNode } from "react";
 import * as THREE from "three";
 import * as YUKA from "yuka";
 
@@ -8,15 +8,14 @@ interface GameContextType {
   entityManager: YUKA.EntityManager;
   playerVehicle: YUKA.Vehicle;
   obstacles: YUKA.GameEntity[];
+  setObstacles: React.Dispatch<React.SetStateAction<YUKA.GameEntity[]>>;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const characterRef = useRef<THREE.Group>(null);
-
-  // Array to keep track of game obstacles for behaviors (like obstacle avoidance)
-  const obstacles = useMemo<YUKA.GameEntity[]>(() => [], []);
+  const [obstacles, setObstacles] = useState<YUKA.GameEntity[]>([]);
 
   // Initialize YUKA core components
   const entityManager = useMemo(() => new YUKA.EntityManager(), []);
@@ -38,6 +37,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     entityManager,
     playerVehicle,
     obstacles,
+    setObstacles
   };
 
   return (

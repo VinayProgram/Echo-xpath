@@ -3,12 +3,14 @@ import * as THREE from 'three'
 import * as YUKA from 'yuka'
 import { useNavmeshHelper } from './graph.helper'
 import { useGame } from '../context/game-context'
+import { useGameStore } from '../store/use-game-store'
 
 const Navmesh = () => {
   const width = 30
   const height = 30
   const segments = 100
   const { playerVehicle, obstacles } = useGame()
+  const isTransforming = useGameStore((state) => state.isTransforming);
   const ref = useRef<THREE.Mesh>(null)
   const geometry = useMemo(() => {
     const geo = new THREE.PlaneGeometry(width, height, segments, segments)
@@ -48,7 +50,7 @@ const Navmesh = () => {
         ref={ref}
         geometry={geometry}
         onClick={(e) => {
-          if (navMesh) {
+          if (navMesh && !isTransforming) {
             gotoTargetPath(e.point)
           }
         }}

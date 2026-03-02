@@ -5,11 +5,17 @@ import Navmesh from './demo/navmesh/navmesh'
 import { GameProvider } from './demo/context/game-context'
 import Actor from './demo/actor/actor'
 import RockObstacle from './demo/obstacles/rock'
+import TransformController from './demo/transform-controller.tsx/transform-controller'
+import { useGameStore } from './demo/store/use-game-store'
+import TransformUI from './demo/ui/transform-ui'
 
 function App() {
+  const isTransforming = useGameStore((state) => state.isTransforming);
+
   return (
     <GameProvider>
-      <div style={{ width: "100vw", height: "100vh" }}>
+      <div style={{ width: "100vw", height: "100vh", position: 'relative' }}>
+        <TransformUI />
         <Canvas style={{ backgroundColor: 'black' }}>
           <ambientLight intensity={1} />
           <pointLight position={[10, 10, 10]} />
@@ -20,8 +26,9 @@ function App() {
           <directionalLight position={[1, 1, 1]} />
           <Actor />
           <RockObstacle />
-          <OrbitControls />
+          <OrbitControls enabled={!isTransforming} />
           <Navmesh />
+          <TransformController />
         </Canvas>
       </div>
     </GameProvider>
