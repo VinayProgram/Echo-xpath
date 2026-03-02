@@ -8,6 +8,7 @@ import RockObstacle from './demo/obstacles/rock'
 import TransformController from './demo/transform-controller.tsx/transform-controller'
 import { useGameStore } from './demo/store/use-game-store'
 import TransformUI from './demo/ui/transform-ui'
+import PathMetricsUI from './demo/ui/path-metrics-ui'
 
 function App() {
   const isTransforming = useGameStore((state) => state.isTransforming);
@@ -17,6 +18,7 @@ function App() {
     <GameProvider>
       <div style={{ width: "100vw", height: "100vh", position: 'relative' }}>
         <TransformUI />
+        <PathMetricsUI />
         <Canvas style={{ backgroundColor: 'black' }}>
           {/* <ambientLight intensity={0.1} /> */}
           <pointLight position={[10, 10, 10]} />

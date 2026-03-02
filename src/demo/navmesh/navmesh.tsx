@@ -13,7 +13,8 @@ const Navmesh = () => {
   const segments = 10
   const { playerVehicle, obstacles } = useGame()
   const setDebugPoints = useGameStore((state) => state.setDebugPoints)
-
+  const setPathMetrics = useGameStore((state) => state.setPathMetrics)
+  const [targetp, setTarget] = React.useState<THREE.Vector3>(new THREE.Vector3(0, 0, 0))
   const texture = useTexture('/land.jpg')
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping
 
@@ -49,6 +50,46 @@ const Navmesh = () => {
       path.add(new YUKA.Vector3(point.x, point.y, point.z))
     }
 
+    // --- Compute path metrics ---
+    const pts = pathPoints.map(p => new THREE.Vector3(p.x, p.y, p.z))
+
+    // 1) Path Length
+    let pathLength = 0
+    const segLengths: number[] = []
+
+    for (let i = 1; i < pts.length; i++) {
+      pathLength += pts[i].distanceTo(pts[i - 1])
+    }
+
+    // 2) Mean Curvature — average turning angle at each interior waypoint
+    let totalCurvature = 0
+    for (let i = 1; i < pts.length; i++) {
+    }
+
+    const curvatures: number[] = []
+    for (let i = 1; i < pts.length - 1; i++) {
+      const v1 = new THREE.Vector3().subVectors(pts[i], pts[i - 1]).normalize()
+      const v2 = new THREE.Vector3().subVectors(pts[i + 1], pts[i]).normalize()
+      const dot = THREE.MathUtils.clamp(v1.dot(v2), -1, 1)
+      const angle = Math.acos(dot) // radians
+      const avgSegLen = (segLengths[i - 1] + segLengths[i]) / 2
+      const kappa = avgSegLen > 0 ? angle / avgSegLen : 0
+      curvatures.push(kappa)
+      totalCurvature += kappa
+    }
+    const meanCurvature = curvatures.length > 0 ? totalCurvature / curvatures.length : 0
+
+    // 3) Jerk Integral — proxy: sum of |Δcurvature| along the path
+    let jerkIntegral = 0
+    for (let i = 1; i < curvatures.length; i++) {
+      jerkIntegral += Math.abs(curvatures[i] - curvatures[i - 1])
+    }
+
+    setPathMetrics({
+      pathLength: parseFloat(pathLength.toFixed(2)),
+      meanCurvature: parseFloat(meanCurvature.toFixed(4)),
+      jerkIntegral: parseFloat(jerkIntegral.toFixed(4)),
+    })
 
     // Clear existing steering behaviors and add new follow path behavior
     playerVehicle.steering.clear()
@@ -65,6 +106,7 @@ const Navmesh = () => {
         geometry={geometry}
         onClick={(e) => {
           if (navMesh && !isTransforming) {
+            setTarget(e.point)
             gotoTargetPath(e.point)
           }
         }}
@@ -74,6 +116,12 @@ const Navmesh = () => {
           side={THREE.DoubleSide}
         />
       </mesh>
+
+      <mesh position={targetp}>
+        <sphereGeometry args={[0.5, 16, 16]} />
+        <meshBasicMaterial color="red" />
+      </mesh>
+
       {/* {debugPoints && <primitive object={debugPoints} />} */}
 
 
