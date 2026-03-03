@@ -1,6 +1,6 @@
 import './App.css'
 import { Canvas } from '@react-three/fiber'
-import { Environment, OrbitControls } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
 import Navmesh from './demo/navmesh/navmesh'
 import { GameProvider } from './demo/context/game-context'
 import Actor from './demo/actor/actor'
