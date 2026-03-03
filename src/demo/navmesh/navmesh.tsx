@@ -4,17 +4,20 @@ import * as YUKA from 'yuka'
 import { useNavmeshHelper } from './graph.helper'
 import { useGame } from '../context/game-context'
 import { useGameStore } from '../store/use-game-store'
-import { useTexture } from '@react-three/drei'
-
-
+import { useTexture, Line } from '@react-three/drei'
+import EchoPath from '../utils/echopath-smooth'
+import PathMetrics from '../utils/path-metrics'
 const Navmesh = () => {
   const width = 50
   const height = 50
-  const segments = 10
+  const segments = 100
   const { playerVehicle, obstacles } = useGame()
   const setDebugPoints = useGameStore((state) => state.setDebugPoints)
   const setPathMetrics = useGameStore((state) => state.setPathMetrics)
+  const followPathSteetingBehavior = useGameStore((state) => state.followPathSteetingBehavior)
+  const withEchoPath = useGameStore((state) => state.withEchoPath)
   const [targetp, setTarget] = React.useState<THREE.Vector3>(new THREE.Vector3(0, 0, 0))
+  const [visualPath, setVisualPath] = React.useState<THREE.Vector3[]>([])
   const texture = useTexture('/land.jpg')
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping
 
@@ -25,80 +28,30 @@ const Navmesh = () => {
     geo.rotateX(-Math.PI / 2)
     return geo
   }, [])
-
-
   const { navigationMesh: navMesh, debugPoints } = useNavmeshHelper(geometry)
   React.useMemo(() => setDebugPoints(debugPoints), [debugPoints])
-
   const gotoTargetPath = (target: THREE.Vector3) => {
     if (!navMesh) return
-    // Use playerVehicle's current position as the start of pathfinding
     const start = playerVehicle.position
     const end = new YUKA.Vector3(target.x, target.y, target.z)
 
-
     const pathPoints = navMesh.findPath(start, end)
-
-
     if (!pathPoints || pathPoints.length === 0) return
 
+    const { path, pointsArray } = withEchoPathHelper(pathPoints, withEchoPath)
 
-    const path = new YUKA.Path()
+    const visualPoints = pointsArray.map(p => new THREE.Vector3(p[0], p[1] + 0.1, p[2]))
+    setVisualPath(visualPoints)
 
+    const rawPathPointsArray = pathPoints.map(p => [p.x, p.y, p.z])
+    setPathMetrics(PathMetrics.compare(rawPathPointsArray, pointsArray))
 
-    for (const point of pathPoints) {
-      path.add(new YUKA.Vector3(point.x, point.y, point.z))
-    }
-
-    // --- Compute path metrics ---
-    const pts = pathPoints.map(p => new THREE.Vector3(p.x, p.y, p.z))
-
-    // 1) Path Length
-    let pathLength = 0
-    const segLengths: number[] = []
-
-    for (let i = 1; i < pts.length; i++) {
-      pathLength += pts[i].distanceTo(pts[i - 1])
-    }
-
-    // 2) Mean Curvature — average turning angle at each interior waypoint
-    let totalCurvature = 0
-    for (let i = 1; i < pts.length; i++) {
-    }
-
-    const curvatures: number[] = []
-    for (let i = 1; i < pts.length - 1; i++) {
-      const v1 = new THREE.Vector3().subVectors(pts[i], pts[i - 1]).normalize()
-      const v2 = new THREE.Vector3().subVectors(pts[i + 1], pts[i]).normalize()
-      const dot = THREE.MathUtils.clamp(v1.dot(v2), -1, 1)
-      const angle = Math.acos(dot) // radians
-      const avgSegLen = (segLengths[i - 1] + segLengths[i]) / 2
-      const kappa = avgSegLen > 0 ? angle / avgSegLen : 0
-      curvatures.push(kappa)
-      totalCurvature += kappa
-    }
-    const meanCurvature = curvatures.length > 0 ? totalCurvature / curvatures.length : 0
-
-    // 3) Jerk Integral — proxy: sum of |Δcurvature| along the path
-    let jerkIntegral = 0
-    for (let i = 1; i < curvatures.length; i++) {
-      jerkIntegral += Math.abs(curvatures[i] - curvatures[i - 1])
-    }
-
-    setPathMetrics({
-      pathLength: parseFloat(pathLength.toFixed(2)),
-      meanCurvature: parseFloat(meanCurvature.toFixed(4)),
-      jerkIntegral: parseFloat(jerkIntegral.toFixed(4)),
-    })
-
-    // Clear existing steering behaviors and add new follow path behavior
     playerVehicle.steering.clear()
     playerVehicle.steering.add(new YUKA.ObstacleAvoidanceBehavior(obstacles.map(x => x.entity)))
-    playerVehicle.steering.add(new YUKA.FollowPathBehavior(path, 0.5))
+    playerVehicle.steering.add(new YUKA.FollowPathBehavior(path, followPathSteetingBehavior))
     playerVehicle.steering.add(new YUKA.ArriveBehavior(end, 0.5))
-
-
   }
+
   return (
     <>
       <mesh
@@ -112,7 +65,10 @@ const Navmesh = () => {
         }}
       >
         <meshStandardMaterial
+          // color={"black"}
           map={texture}
+          opacity={1}
+          transparent
           side={THREE.DoubleSide}
         />
       </mesh>
@@ -122,7 +78,18 @@ const Navmesh = () => {
         <meshBasicMaterial color="red" />
       </mesh>
 
-      {/* {debugPoints && <primitive object={debugPoints} />} */}
+      {debugPoints && <primitive object={debugPoints} />}
+      {visualPath.length > 0 && (
+        <Line
+          points={visualPath}
+          color="#00f3ff"
+          lineWidth={3}
+          transparent
+          opacity={0.7}
+          //@ts-ignore
+          attenuation={true}
+        />
+      )}
 
 
     </>
@@ -130,4 +97,22 @@ const Navmesh = () => {
 }
 
 
+const withEchoPathHelper = (pathPoints: YUKA.Vector3[], withEchoPath: boolean) => {
+  const path = new YUKA.Path()
+  let pointsArray: number[][] = []
+
+  if (withEchoPath) {
+    pointsArray = EchoPath.smooth(pathPoints.map(p => [p.x, p.y, p.z]))
+    pointsArray.forEach((p) => {
+      path.add(new YUKA.Vector3(p[0], p[1], p[2]))
+    })
+  } else {
+    pointsArray = pathPoints.map(p => [p.x, p.y, p.z])
+    pathPoints.forEach(p => {
+      path.add(p)
+    })
+  }
+
+  return { path, pointsArray }
+}
 export default Navmesh

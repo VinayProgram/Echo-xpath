@@ -20,13 +20,13 @@ function App() {
         <TransformUI />
         <PathMetricsUI />
         <Canvas style={{ backgroundColor: 'black' }}>
-          {/* <ambientLight intensity={0.1} /> */}
+          <ambientLight intensity={1} />
           <pointLight position={[10, 10, 10]} />
-          <Environment
+          {/* <Environment
             files="/sky.hdr"
             background
             ground={{ height: 5000, radius: 4000, scale: 20000 }}
-          />
+          /> */}
           {/* <directionalLight position={[1, 1, 1]} /> */}
           <Actor />
           <RockObstacle />
@@ -34,6 +34,7 @@ function App() {
           <Navmesh />
           <TransformController />
         </Canvas>
+
       </div>
     </GameProvider>
   )

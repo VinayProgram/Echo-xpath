@@ -6,6 +6,10 @@ const TransformUI: React.FC = () => {
     const setIsTransforming = useGameStore((state) => state.setIsTransforming);
     const cameraMode = useGameStore((state) => state.cameraMode);
     const setCameraMode = useGameStore((state) => state.setCameraMode);
+    const followPathSteetingBehavior = useGameStore((state) => state.followPathSteetingBehavior);
+    const setFollowPathSteetingBehavior = useGameStore((state) => state.setFollowPathSteetingBehavior);
+    const withEchoPath = useGameStore((state) => state.withEchoPath);
+    const setWithEchoPath = useGameStore((state) => state.setWithEchoPath);
 
     return (
         <div style={{
@@ -77,6 +81,39 @@ const TransformUI: React.FC = () => {
                 fontSize: '14px'
             }}>
                 <div
+                    onClick={() => setWithEchoPath(!withEchoPath)}
+                    style={{
+                        width: '36px',
+                        height: '20px',
+                        backgroundColor: withEchoPath ? '#3b82f6' : 'rgba(255, 255, 255, 0.2)',
+                        borderRadius: '10px',
+                        position: 'relative',
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)'
+                    }}
+                >
+                    <div style={{
+                        width: '14px',
+                        height: '14px',
+                        backgroundColor: 'white',
+                        borderRadius: '50%',
+                        position: 'absolute',
+                        top: '2px',
+                        left: withEchoPath ? '18px' : '2px',
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    }} />
+                </div>
+                <span>Echo Path X</span>
+            </label>
+
+            <label style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                cursor: 'pointer',
+                fontSize: '14px'
+            }}>
+                <div
                     onClick={() => setCameraMode(cameraMode === 'orbit' ? 'firstPerson' : 'orbit')}
                     style={{
                         width: '36px',
@@ -102,6 +139,23 @@ const TransformUI: React.FC = () => {
                 <span>First Person View</span>
             </label>
 
+            <label style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                cursor: 'pointer',
+                fontSize: '14px'
+            }}>
+                <input
+                    type='number'
+                    min="0"
+                    max={10000}
+                    step="0.5"
+                    value={followPathSteetingBehavior}
+                    onChange={(e) => setFollowPathSteetingBehavior(Number(e.target.value))}
+                />
+                <span>Follow Steering Behavior</span>
+            </label>
 
 
             {isTransforming && (
