@@ -6,8 +6,8 @@ import { useGame } from '../context/game-context'
 import { useGameStore } from '../store/use-game-store'
 import { Line, Ring } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import EchoPath from '../utils/echopath-smooth'
-import PathMetrics from '../utils/path-metrics'
+import EchoPath from '../../utils/echopath-smooth'
+import PathMetrics from '../../utils/path-metrics'
 import './ground-material'
 
 const Navmesh = () => {
