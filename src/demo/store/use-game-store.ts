@@ -41,9 +41,13 @@ interface GameState {
     setFollowPathSteetingBehavior: (value: number) => void
     withEchoPath: boolean
     setWithEchoPath: (value: boolean) => void
+    obstacleAvoidance: boolean
+    setObstacleAvoidance: (value: boolean) => void
 }
 
 export const useGameStore = create<GameState>((set) => ({
+    obstacleAvoidance: true,
+    setObstacleAvoidance: (value) => set({ obstacleAvoidance: value }),
     isTransforming: false,
     setIsTransforming: (value) => set({ isTransforming: value }),
     cameraMode: 'orbit',

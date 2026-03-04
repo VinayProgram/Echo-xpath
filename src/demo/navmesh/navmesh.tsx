@@ -15,7 +15,7 @@ const Navmesh = () => {
   const setDebugPoints = useGameStore((state) => state.setDebugPoints)
   const setPathMetrics = useGameStore((state) => state.setPathMetrics)
   const followPathSteetingBehavior = useGameStore((state) => state.followPathSteetingBehavior)
-  const withEchoPath = useGameStore((state) => state.withEchoPath)
+  const { obstacleAvoidance, withEchoPath } = useGameStore()
   const [targetp, setTarget] = React.useState<THREE.Vector3>(new THREE.Vector3(0, 0, 0))
   const [visualPath, setVisualPath] = React.useState<THREE.Vector3[]>([])
   const texture = useTexture('/land.jpg')
@@ -47,7 +47,9 @@ const Navmesh = () => {
     setPathMetrics(PathMetrics.compare(rawPathPointsArray, pointsArray))
 
     playerVehicle.steering.clear()
-    playerVehicle.steering.add(new YUKA.ObstacleAvoidanceBehavior(obstacles.map(x => x.entity)))
+    if (obstacleAvoidance) {
+      playerVehicle.steering.add(new YUKA.ObstacleAvoidanceBehavior(obstacles.map(x => x.entity)))
+    }
     playerVehicle.steering.add(new YUKA.FollowPathBehavior(path, followPathSteetingBehavior))
     playerVehicle.steering.add(new YUKA.ArriveBehavior(end, 0.5))
   }
@@ -78,7 +80,7 @@ const Navmesh = () => {
         <meshBasicMaterial color="red" />
       </mesh>
 
-      {debugPoints && <primitive object={debugPoints} />}
+      {/* {debugPoints && <primitive object={debugPoints} />} */}
       {visualPath.length > 0 && (
         <Line
           points={visualPath}

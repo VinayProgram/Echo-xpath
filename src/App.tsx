@@ -5,39 +5,40 @@ import Navmesh from './demo/navmesh/navmesh'
 import { GameProvider } from './demo/context/game-context'
 import Actor from './demo/actor/actor'
 import RockObstacle from './demo/obstacles/rock'
-import TransformController from './demo/transform-controller.tsx/transform-controller'
-import { useGameStore } from './demo/store/use-game-store'
 import TransformUI from './demo/ui/transform-ui'
 import PathMetricsUI from './demo/ui/path-metrics-ui'
+import Navbar from './components/Navbar'
+import TransformController from './demo/transform-controller/transform-controller'
 
 function App() {
-  const isTransforming = useGameStore((state) => state.isTransforming);
-  const cameraMode = useGameStore((state) => state.cameraMode);
 
   return (
     <GameProvider>
-      <div style={{ width: "100vw", height: "100vh", position: 'relative' }}>
+      <div className="dark relative w-screen h-screen overflow-hidden text-foreground bg-background">
+        <Navbar />
         <TransformUI />
         <PathMetricsUI />
-        <Canvas style={{ backgroundColor: 'black' }}>
-          <ambientLight intensity={1} />
-          <pointLight position={[10, 10, 10]} />
-          {/* <Environment
+        <main className="w-full h-full pt-16">
+          <Canvas style={{ backgroundColor: 'black' }} className="w-full h-full">
+            <ambientLight intensity={1} />
+            <pointLight position={[10, 10, 10]} />
+            {/* <Environment
             files="/sky.hdr"
             background
             ground={{ height: 5000, radius: 4000, scale: 20000 }}
           /> */}
-          {/* <directionalLight position={[1, 1, 1]} /> */}
-          <Actor />
-          <RockObstacle />
-          <OrbitControls enabled={!isTransforming && cameraMode === 'orbit'} />
-          <Navmesh />
-          <TransformController />
-        </Canvas>
-
+            {/* <directionalLight position={[1, 1, 1]} /> */}
+            <Actor />
+            <RockObstacle />
+            <OrbitControls makeDefault />
+            <Navmesh />
+            <TransformController />
+          </Canvas>
+        </main>
       </div>
     </GameProvider>
   )
 }
 
 export default App
+

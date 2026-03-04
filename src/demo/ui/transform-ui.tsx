@@ -1,175 +1,106 @@
 import React from 'react';
 import { useGameStore } from '../store/use-game-store';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Settings2, Gamepad2, Move, Video, Info } from "lucide-react";
+import { Switch } from '@/components/ui/switch';
 
 const TransformUI: React.FC = () => {
-    const isTransforming = useGameStore((state) => state.isTransforming);
-    const setIsTransforming = useGameStore((state) => state.setIsTransforming);
-    const cameraMode = useGameStore((state) => state.cameraMode);
-    const setCameraMode = useGameStore((state) => state.setCameraMode);
-    const followPathSteetingBehavior = useGameStore((state) => state.followPathSteetingBehavior);
-    const setFollowPathSteetingBehavior = useGameStore((state) => state.setFollowPathSteetingBehavior);
-    const withEchoPath = useGameStore((state) => state.withEchoPath);
-    const setWithEchoPath = useGameStore((state) => state.setWithEchoPath);
+    const {
+        obstacleAvoidance, setObstacleAvoidance,
+        isTransforming, setIsTransforming,
+        cameraMode, setCameraMode,
+        followPathSteetingBehavior, setFollowPathSteetingBehavior,
+        withEchoPath, setWithEchoPath
+    } = useGameStore()
 
     return (
-        <div style={{
-            position: 'absolute',
-            top: '20px',
-            left: '20px',
-            zIndex: 1000,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '12px',
-            padding: '16px',
-            background: 'rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: '12px',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
-            color: 'white',
-            fontFamily: '"Inter", system-ui, -apple-system, sans-serif',
-            userSelect: 'none'
-        }}>
-            <div style={{
-                fontSize: '14px',
-                fontWeight: 600,
-                letterSpacing: '0.05em',
-                textTransform: 'uppercase',
-                opacity: 0.8
-            }}>
-                Controls
-            </div>
+        <>
+            <Card className="fixed top-20 left-4 z-40 w-72 bg-background/60 backdrop-blur-lg border-primary/10 shadow-xl transition-all hover:bg-background/80">
+                <CardHeader className="pb-3 pt-4">
+                    <CardTitle className="text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-2">
+                        <Settings2 className="w-4 h-4" />
+                        Simulation Controls
+                    </CardTitle>
+                    <CardDescription className="text-[10px]">Configure real-time behaviors</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-4 py-2">
+                    <div className="flex items-center justify-between group transition-colors hover:bg-white/5 p-1 rounded-md">
+                        <div className="flex items-center gap-2">
+                            <Move className="w-3.5 h-3.5 opacity-50" />
+                            <Label htmlFor="transform-mode" className="text-sm cursor-pointer">Transform Mode</Label>
+                        </div>
+                        <Switch
 
-            <label style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                cursor: 'pointer',
-                fontSize: '14px'
-            }}>
-                <div
-                    onClick={() => setIsTransforming(!isTransforming)}
-                    style={{
-                        width: '36px',
-                        height: '20px',
-                        backgroundColor: isTransforming ? '#3b82f6' : 'rgba(255, 255, 255, 0.2)',
-                        borderRadius: '10px',
-                        position: 'relative',
-                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)'
-                    }}
-                >
-                    <div style={{
-                        width: '14px',
-                        height: '14px',
-                        backgroundColor: 'white',
-                        borderRadius: '50%',
-                        position: 'absolute',
-                        top: '2px',
-                        left: isTransforming ? '18px' : '2px',
-                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    }} />
-                </div>
-                <span>Transform Mode</span>
-            </label>
+                            id="transform-mode"
+                            checked={isTransforming}
+                            onCheckedChange={setIsTransforming}
+                        />
+                    </div>
 
-            <label style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                cursor: 'pointer',
-                fontSize: '14px'
-            }}>
-                <div
-                    onClick={() => setWithEchoPath(!withEchoPath)}
-                    style={{
-                        width: '36px',
-                        height: '20px',
-                        backgroundColor: withEchoPath ? '#3b82f6' : 'rgba(255, 255, 255, 0.2)',
-                        borderRadius: '10px',
-                        position: 'relative',
-                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)'
-                    }}
-                >
-                    <div style={{
-                        width: '14px',
-                        height: '14px',
-                        backgroundColor: 'white',
-                        borderRadius: '50%',
-                        position: 'absolute',
-                        top: '2px',
-                        left: withEchoPath ? '18px' : '2px',
-                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    }} />
-                </div>
-                <span>Echo Path X</span>
-            </label>
+                    <div className="flex items-center justify-between group transition-colors hover:bg-white/5 p-1 rounded-md">
+                        <div className="flex items-center gap-2">
+                            <Gamepad2 className="w-3.5 h-3.5 opacity-50" />
+                            <Label htmlFor="echo-path" className="text-sm cursor-pointer">Echo Path X</Label>
+                        </div>
+                        <Switch
+                            id="echo-path"
+                            checked={withEchoPath}
+                            onCheckedChange={setWithEchoPath}
+                        />
+                    </div>
 
-            <label style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                cursor: 'pointer',
-                fontSize: '14px'
-            }}>
-                <div
-                    onClick={() => setCameraMode(cameraMode === 'orbit' ? 'firstPerson' : 'orbit')}
-                    style={{
-                        width: '36px',
-                        height: '20px',
-                        backgroundColor: cameraMode === 'firstPerson' ? '#10b981' : 'rgba(255, 255, 255, 0.2)',
-                        borderRadius: '10px',
-                        position: 'relative',
-                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)'
-                    }}
-                >
-                    <div style={{
-                        width: '14px',
-                        height: '14px',
-                        backgroundColor: 'white',
-                        borderRadius: '50%',
-                        position: 'absolute',
-                        top: '2px',
-                        left: cameraMode === 'firstPerson' ? '18px' : '2px',
-                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    }} />
-                </div>
-                <span>First Person View</span>
-            </label>
+                    <div className="flex items-center justify-between group transition-colors hover:bg-white/5 p-1 rounded-md">
+                        <div className="flex items-center gap-2">
+                            <Gamepad2 className="w-3.5 h-3.5 opacity-50" />
+                            <Label htmlFor="avoidance" className="text-sm cursor-pointer">Obstacle Avoidance</Label>
+                        </div>
+                        <Switch
+                            id="avoidance"
+                            checked={obstacleAvoidance}
+                            onCheckedChange={setObstacleAvoidance}
+                        />
+                    </div>
 
-            <label style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                cursor: 'pointer',
-                fontSize: '14px'
-            }}>
-                <input
-                    type='number'
-                    min="0"
-                    max={10000}
-                    step="0.5"
-                    value={followPathSteetingBehavior}
-                    onChange={(e) => setFollowPathSteetingBehavior(Number(e.target.value))}
-                />
-                <span>Follow Steering Behavior</span>
-            </label>
+                    <div className="flex items-center justify-between group transition-colors hover:bg-white/5 p-1 rounded-md">
+                        <div className="flex items-center gap-2">
+                            <Video className="w-3.5 h-3.5 opacity-50" />
+                            <Label htmlFor="camera-mode" className="text-sm cursor-pointer">FPV Camera</Label>
+                        </div>
+                        <Switch
+                            id="camera-mode"
+                            checked={cameraMode === 'firstPerson'}
+                            onCheckedChange={(checked) => setCameraMode(checked ? 'firstPerson' : 'orbit')}
+                        />
+                    </div>
 
+                    <div className="space-y-2 pt-2 border-t border-white/5">
+                        <Label className="text-[10px] font-semibold opacity-50 uppercase tracking-wider">Steering Weight</Label>
+                        <div className="flex gap-2">
+                            <Input
+                                type="number"
+                                min="0"
+                                max="1000"
+                                step="1"
+                                value={followPathSteetingBehavior}
+                                onChange={(e) => setFollowPathSteetingBehavior(Number(e.target.value))}
+                                className="h-8 text-xs bg-white/5 border-white/10"
+                            />
+                        </div>
+                    </div>
 
-            {isTransforming && (
-                <div style={{
-                    fontSize: '12px',
-                    opacity: 0.6,
-                    marginTop: '4px',
-                    lineHeight: '1.4'
-                }}>
-                    Select an object to transform.<br />
-                    [W] Translate | [E] Rotate | [R] Scale
-                </div>
-            )}
-        </div>
+                    {isTransforming && (
+                        <div className="mt-2 p-2 rounded bg-primary/5 border border-primary/20 flex gap-2 items-start">
+                            <Info className="w-3.5 h-3.5 text-primary mt-0.5" />
+                            <div className="text-[10px] leading-tight text-primary/80">
+                                <strong>Hotkeys:</strong> [W] Translate | [E] Rotate | [R] Scale
+                            </div>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+        </>
     );
 };
 

@@ -1,63 +1,38 @@
 import React from 'react';
 import { useGameStore } from '../store/use-game-store';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Activity, Zap, TrendingDown, Target } from "lucide-react";
 
 const MetricRow: React.FC<{ label: string; raw: string | number; smooth: string | number; unit: string; color: string }> = ({ label, raw, smooth, unit, color }) => (
-    <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '10px 0',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
-    }}>
-        <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            marginBottom: '4px'
-        }}>
-            <div style={{
-                width: '6px',
-                height: '6px',
-                borderRadius: '50%',
-                backgroundColor: color,
-                boxShadow: `0 0 6px ${color}80`,
-            }} />
-            <span style={{ fontSize: '11px', fontWeight: 600, opacity: 0.8, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{label}</span>
+    <div className="flex flex-col py-3 border-b border-white/5 last:border-0">
+        <div className="flex items-center gap-2 mb-2">
+            <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color, boxShadow: `0 0 8px ${color}` }} />
+            <span className="text-[10px] font-bold uppercase tracking-wider opacity-60">{label}</span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                <span style={{ fontSize: '10px', opacity: 0.4 }}>Raw:</span>
-                <span style={{ fontSize: '13px', fontWeight: 500, opacity: 0.6, fontVariantNumeric: 'tabular-nums' }}>{raw}</span>
+        <div className="flex justify-between items-baseline">
+            <div className="flex items-baseline gap-1.5">
+                <span className="text-[9px] uppercase opacity-30 font-bold">Raw</span>
+                <span className="text-xs font-medium opacity-50 tabular-nums">{raw}</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                <span style={{ fontSize: '10px', color: color, opacity: 0.8 }}>Smooth:</span>
-                <span style={{
-                    fontSize: '15px',
-                    fontWeight: 700,
-                    color: 'white',
-                    fontVariantNumeric: 'tabular-nums',
-                    textShadow: `0 0 10px ${color}40`
-                }}>
+            <div className="flex items-baseline gap-1.5">
+                <span className="text-[9px] uppercase font-bold" style={{ color }}>Smooth</span>
+                <span className="text-sm font-black text-white tabular-nums drop-shadow-md">
                     {smooth}
                 </span>
-                <span style={{ fontSize: '9px', opacity: 0.4 }}>{unit}</span>
+                <span className="text-[10px] opacity-30 font-medium">{unit}</span>
             </div>
         </div>
     </div>
 );
 
-const ImprovementBadge: React.FC<{ label: string; value: string; color: string }> = ({ label, value, color }) => (
-    <div style={{
-        backgroundColor: `${color}15`,
-        border: `1px solid ${color}30`,
-        borderRadius: '6px',
-        padding: '4px 8px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        flex: 1
-    }}>
-        <span style={{ fontSize: '9px', opacity: 0.6, marginBottom: '2px' }}>{label}</span>
-        <span style={{ fontSize: '14px', fontWeight: 800, color: color }}>-{value}</span>
+const ImprovementBadge: React.FC<{ label: string; value: string; color: string; icon: React.ReactNode }> = ({ label, value, color, icon }) => (
+    <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-white/5 border border-white/5 flex-1 transition-all hover:bg-white/10">
+        <div className="flex items-center gap-1.5 mb-1 opacity-50">
+            {icon}
+            <span className="text-[8px] font-bold uppercase tracking-widest">{label}</span>
+        </div>
+        <span className="text-sm font-black" style={{ color }}>-{value}</span>
     </div>
 )
 
@@ -65,105 +40,71 @@ const PathMetricsUI: React.FC = () => {
     const pathMetrics = useGameStore((state) => state.pathMetrics);
 
     return (
-        <div style={{
-            position: 'absolute',
-            bottom: '20px',
-            left: '20px',
-            zIndex: 1000,
-            width: '260px',
-            padding: '16px',
-            background: 'rgba(10, 10, 15, 0.7)',
-            backdropFilter: 'blur(16px) saturate(180%)',
-            borderRadius: '18px',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            boxShadow: '0 12px 40px rgba(0, 0, 0, 0.5)',
-            color: 'white',
-            fontFamily: '"Inter", system-ui, -apple-system, sans-serif',
-            userSelect: 'none',
-        }}>
-            <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '12px',
-            }}>
-                <div style={{
-                    fontSize: '10px',
-                    fontWeight: 800,
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
-                    color: '#00f3ff',
-                }}>
-                    EchoPath Analytics
+        <Card className="fixed top-20 right-6 z-40 w-72 bg-slate-950/80 backdrop-blur-xl border-white/10 shadow-2xl overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400" />
+            <CardHeader className="pb-2 pt-5">
+                <div className="flex justify-between items-center">
+                    <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400 flex items-center gap-2">
+                        <Activity className="w-3 h-3" />
+                        EchoPath Analytics
+                    </CardTitle>
+                    {pathMetrics && (
+                        <Badge variant="outline" className="text-[9px] h-4 px-1.5 bg-white/5 border-white/10 opacity-60 tabular-nums">
+                            {pathMetrics.smooth.points} PTS
+                        </Badge>
+                    )}
                 </div>
-                {pathMetrics && (
-                    <div style={{
-                        fontSize: '10px',
-                        background: 'rgba(255,255,255,0.1)',
-                        padding: '2px 6px',
-                        borderRadius: '4px',
-                        opacity: 0.6,
-                        fontVariantNumeric: 'tabular-nums'
-                    }}>
-                        {pathMetrics.smooth.points} pts
-                    </div>
-                )}
-            </div>
-
-            {pathMetrics ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <MetricRow
-                        label="Path Length"
-                        raw={pathMetrics.raw.length.toFixed(2)}
-                        smooth={pathMetrics.smooth.length.toFixed(2)}
-                        unit="u"
-                        color="#3b82f6"
-                    />
-                    <MetricRow
-                        label="Avg Curvature"
-                        raw={pathMetrics.raw.curvature.toFixed(1)}
-                        smooth={pathMetrics.smooth.curvature.toFixed(1)}
-                        unit="°"
-                        color="#10b981"
-                    />
-                    <MetricRow
-                        label="Jerk Integral"
-                        raw={pathMetrics.raw.jerk.toFixed(0)}
-                        smooth={pathMetrics.smooth.jerk.toFixed(0)}
-                        unit="ΣΔ"
-                        color="#f59e0b"
-                    />
-
-                    <div style={{
-                        marginTop: '12px',
-                        display: 'flex',
-                        gap: '8px',
-                    }}>
-                        <ImprovementBadge
-                            label="CURVATURE"
-                            value={pathMetrics.improvement.curvatureReduction}
+            </CardHeader>
+            <CardContent className="pt-2">
+                {pathMetrics ? (
+                    <div className="space-y-1">
+                        <MetricRow
+                            label="Path Length"
+                            raw={pathMetrics.raw.length.toFixed(2)}
+                            smooth={pathMetrics.smooth.length.toFixed(2)}
+                            unit="u"
+                            color="#3b82f6"
+                        />
+                        <MetricRow
+                            label="Avg Curvature"
+                            raw={pathMetrics.raw.curvature.toFixed(1)}
+                            smooth={pathMetrics.smooth.curvature.toFixed(1)}
+                            unit="°"
                             color="#10b981"
                         />
-                        <ImprovementBadge
-                            label="JERK"
-                            value={pathMetrics.improvement.jerkReduction}
+                        <MetricRow
+                            label="Jerk Integral"
+                            raw={pathMetrics.raw.jerk.toFixed(0)}
+                            smooth={pathMetrics.smooth.jerk.toFixed(0)}
+                            unit="ΣΔ"
                             color="#f59e0b"
                         />
+
+                        <div className="mt-4 flex gap-2">
+                            <ImprovementBadge
+                                label="Curvature"
+                                value={pathMetrics.improvement.curvatureReduction}
+                                color="#10b981"
+                                icon={<TrendingDown className="w-2.5 h-2.5" />}
+                            />
+                            <ImprovementBadge
+                                label="Jerk"
+                                value={pathMetrics.improvement.jerkReduction}
+                                color="#f59e0b"
+                                icon={<Zap className="w-2.5 h-2.5" />}
+                            />
+                        </div>
                     </div>
-                </div>
-            ) : (
-                <div style={{
-                    fontSize: '12px',
-                    opacity: 0.5,
-                    padding: '20px 0',
-                    textAlign: 'center',
-                    border: '1px dashed rgba(255,255,255,0.1)',
-                    borderRadius: '10px',
-                }}>
-                    Target a point to analyze path optimization
-                </div>
-            )}
-        </div>
+                ) : (
+                    <div className="py-10 flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-xl gap-3">
+                        <Target className="w-8 h-8 opacity-10 animate-pulse" />
+                        <p className="text-[10px] font-bold uppercase tracking-widest opacity-20 text-center">
+                            Select target<br />to begin analysis
+                        </p>
+                    </div>
+                )}
+            </CardContent>
+        </Card>
     );
 };
 
