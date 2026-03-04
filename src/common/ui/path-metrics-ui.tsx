@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGameStore } from '../store/use-game-store';
+import { useGameStore } from '../../store/use-game-store';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Activity, Zap, TrendingDown, Target } from "lucide-react";

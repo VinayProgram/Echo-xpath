@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { TransformControls } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import * as THREE from 'three'
-import { useGameStore } from '../store/use-game-store'
-import { useGame } from '../context/game-context'
+import { useGameStore } from '../../../store/use-game-store'
+import { useYuka } from '@/yuka-manager/yuka-context'
 
 
 interface TransformControllerProps {
@@ -16,7 +16,7 @@ const TransformController: React.FC<TransformControllerProps> = ({ onSelect }) =
     const isTransforming = useGameStore((state) => state.isTransforming);
     const [selectedObject, setSelectedObject] = useState<THREE.Object3D | null>(null);
     const [mode, setMode] = useState<'translate' | 'rotate' | 'scale'>('translate');
-    const { obstacles } = useGame()
+    const { obstacles } = useYuka()
 
     // Deselect if transformation mode is turned off
     useEffect(() => {

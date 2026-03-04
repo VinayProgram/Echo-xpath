@@ -1,8 +1,19 @@
+import * as YUKA from 'yuka'
 import React from 'react'
 import * as THREE from 'three'
-import * as YUKA from 'yuka'
+export const useNavmeshHelperGLB = ({ path }: { path: string }) => {
+    const NavmeshLoader = new YUKA.NavMeshLoader()
+    const [navigationMesh, setNavigationMesh] = React.useState<YUKA.NavMesh>()
+    React.useEffect(() => {
+        NavmeshLoader.load(path).then(navigationMesh => {
+            setNavigationMesh(navigationMesh)
+        })
+    }, [])
+    return navigationMesh
+}
 
-export const useNavmeshHelper = (geo: THREE.PlaneGeometry | null) => {
+
+export const useNavmeshGeom = (geo: THREE.PlaneGeometry | null) => {
 
     const [navigationMesh, setNavigationMesh] = React.useState<YUKA.NavMesh | null>(null)
     const [debugPoints, setDebugPoints] = React.useState<THREE.Points | null>(null)
@@ -65,4 +76,16 @@ export const useNavmeshHelper = (geo: THREE.PlaneGeometry | null) => {
     }, [geo])
 
     return { navigationMesh, debugPoints }
+}
+
+export const useNavmeshHelper = ({ geo, path = '/navmesh.glb' }: { geo: THREE.PlaneGeometry | null, path?: string }) => {
+    if (geo) {
+        const { navigationMesh } = useNavmeshGeom(geo)
+        const { debugPoints } = useNavmeshGeom(geo)
+        return { navigationMesh, debugPoints }
+    }
+    else {
+        const navigationMesh = useNavmeshHelperGLB({ path })
+        return { navigationMesh, debugPoints: null }
+    }
 }

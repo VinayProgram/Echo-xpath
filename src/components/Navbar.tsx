@@ -4,7 +4,7 @@ import {
     NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { Badge } from "@/components/ui/badge";
-import { useGameStore } from '@/demo/store/use-game-store';
+import { useGameStore } from '@/store/use-game-store';
 
 const Navbar = () => {
     const { withEchoPath, obstacleAvoidance } = useGameStore();

@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useRef, useMemo, useState, type ReactNode } from "react";
 import * as THREE from "three";
 import * as YUKA from "yuka";
-
+import { useGameStore } from "../store/use-game-store";
 
 interface YukaContextType {
     characterRef: React.RefObject<THREE.Group | null>;
@@ -25,23 +25,25 @@ const YukaContext = createContext<YukaContextType | undefined>(undefined);
 
 export const YukaProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const characterRef = useRef<THREE.Group>(null);
+    const vehicleConfig = useGameStore((state) => state.vehicleConfig)
     const [obstacles, setObstacles] = useState<{
         entity: YUKA.GameEntity,
         mesh: THREE.Object3D
     }[]>([]);
     const obstacleMeshRef = useRef<THREE.Group[]>([]);
-    // Initialize YUKA core components
     const entityManager = useMemo(() => new YUKA.EntityManager(), []);
     const playerVehicle = useMemo(() => {
         const vehicle = new YUKA.Vehicle();
-        vehicle.maxSpeed = 3;
-        vehicle.maxForce = 4;
-        vehicle.mass = 1;
         return vehicle;
     }, []);
 
+    // Sync vehicle config from store to YUKA entity
+    React.useEffect(() => {
+        playerVehicle.maxSpeed = vehicleConfig.maxSpeed;
+        playerVehicle.maxForce = vehicleConfig.maxForce;
+        playerVehicle.mass = vehicleConfig.mass;
+    }, [vehicleConfig, playerVehicle]);
 
-    // Add vehicle to manager once
     React.useEffect(() => {
         entityManager.add(playerVehicle);
     }, [entityManager, playerVehicle]);

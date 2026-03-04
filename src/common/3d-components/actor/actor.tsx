@@ -1,20 +1,33 @@
-import { useEffect, useMemo, useRef } from 'react'
-import { useGame } from '../context/game-context'
+import { useEffect, useRef } from 'react'
 import { useFrame, useLoader } from '@react-three/fiber'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three-stdlib'
 import { useAnimations } from '@react-three/drei'
 import * as YUKA from 'yuka'
-import { useGameStore } from '../store/use-game-store'
-const Actor = () => {
-    const { characterRef, entityManager, playerVehicle, obstacles } = useGame();
-    const player = useLoader(GLTFLoader, '/cartoon_car.glb');
+import { useGameStore } from '../../../store/use-game-store'
+import { useYuka } from '@/yuka-manager/yuka-context'
+interface ActorProps {
+    modelPath?: string;
+    scale?: number;
+    rotation?: [number, number, number];
+    cameraOffset?: THREE.Vector3;
+    lookAtOffset?: THREE.Vector3;
+    animationSpeedMultiplier?: number;
+}
+
+const Actor = ({
+    modelPath = '/cartoon_car.glb',
+    scale = 0.5,
+    rotation = [0, -Math.PI / 2, 0],
+    cameraOffset = new THREE.Vector3(0, 1.5, -3),
+    lookAtOffset = new THREE.Vector3(0, 1, 5),
+    animationSpeedMultiplier = 2
+}: ActorProps) => {
+    const { characterRef, entityManager, playerVehicle, obstacles } = useYuka();
+    const player = useLoader(GLTFLoader, modelPath);
     const { actions, names } = useAnimations(player.animations, characterRef);
     const isTransforming = useGameStore((state) => state.isTransforming)
     const cameraMode = useGameStore((state) => state.cameraMode)
-
-    const cameraOffset = useMemo(() => new THREE.Vector3(0, 1.5, -3), []) // Behind and above
-    const lookAtOffset = useMemo(() => new THREE.Vector3(0, 1, 5), [])   // Looking forward
 
     useEffect(() => {
         if (!characterRef.current) return;
@@ -90,7 +103,7 @@ const Actor = () => {
             const currentAction = actions[names[0]];
             if (currentAction) {
                 // Adjust animation playback speed relative to movement
-                currentAction.timeScale = speed * 2; // Adjust multiplier as needed
+                currentAction.timeScale = speed * animationSpeedMultiplier; // Use prop
                 if (speed < 0.05) {
                     currentAction.paused = true;
                 } else {
@@ -103,7 +116,7 @@ const Actor = () => {
 
     return (
         <group ref={characterRef} matrixAutoUpdate={false} position={[0, 0, 0]} >
-            <primitive object={player.scene} scale={0.5} rotation={[0, -Math.PI / 2, 0]} />
+            <primitive object={player.scene} scale={scale} rotation={rotation} />
         </group>
     )
 }

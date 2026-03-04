@@ -1,14 +1,14 @@
 import { useEffect, useMemo } from 'react'
 import * as THREE from 'three'
 import * as YUKA from 'yuka'
-import { useGame } from '../context/game-context'
 import { useLoader, useThree } from '@react-three/fiber'
 import { GLTFLoader } from 'three-stdlib'
-import { useGameStore } from '../store/use-game-store'
+import { useGameStore } from '../../../store/use-game-store'
+import { useYuka } from '@/yuka-manager/yuka-context'
 
 
 const RockObstacles = ({ count = 40 }) => {
-    const { entityManager, obstacles, setObstacles } = useGame()
+    const { entityManager, obstacles, setObstacles } = useYuka()
     const scene = useThree((state) => state.scene)
     const gltf = useLoader(GLTFLoader, '/desert_rock.glb')
     const { isTransforming } = useGameStore()

@@ -1,15 +1,14 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.tsx'
-import Demo2 from './demo-2/App.tsx'
-import { StoreProviderComponent } from './demo-2/store.tsx'
-
+import { YukaProvider } from './yuka-manager/yuka-context.tsx'
+import { RouterProvider } from '@tanstack/react-router'
+import { router } from './router.tsx'
+import './App.css'
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {/* <App /> */}
-    <StoreProviderComponent>
-      <Demo2 />
-    </StoreProviderComponent>
+    <YukaProvider>
+      <RouterProvider router={router} />
+    </YukaProvider>
   </StrictMode>,
 )

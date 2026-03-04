@@ -27,6 +27,11 @@ export interface Improvement {
     densityIncrease: string
 }
 
+export interface VehicleConfig {
+    maxSpeed: number
+    maxForce: number
+    mass: number
+}
 
 interface GameState {
     isTransforming: boolean
@@ -43,6 +48,8 @@ interface GameState {
     setWithEchoPath: (value: boolean) => void
     obstacleAvoidance: boolean
     setObstacleAvoidance: (value: boolean) => void
+    vehicleConfig: VehicleConfig
+    setVehicleConfig: (value: VehicleConfig) => void
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -60,4 +67,10 @@ export const useGameStore = create<GameState>((set) => ({
     setWithEchoPath: (value) => set({ withEchoPath: value }),
     followPathSteetingBehavior: 1,
     setFollowPathSteetingBehavior: (value) => set({ followPathSteetingBehavior: value }),
+    vehicleConfig: {
+        maxSpeed: 10,
+        maxForce: 1,
+        mass: 1
+    },
+    setVehicleConfig: (value) => set({ vehicleConfig: value })
 }))
