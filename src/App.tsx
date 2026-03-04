@@ -19,18 +19,20 @@ function App() {
         <TransformUI />
         <PathMetricsUI />
         <main className="w-full h-full pt-16">
-          <Canvas style={{ backgroundColor: 'black' }} className="w-full h-full">
+          <Canvas
+            style={{ backgroundColor: 'black' }}
+            className="w-full h-full"
+            camera={{ position: [0, 40, 0], fov: 60, near: 0.1, far: 200 }}
+          >
             <ambientLight intensity={1} />
             <pointLight position={[10, 10, 10]} />
-            {/* <Environment
-            files="/sky.hdr"
-            background
-            ground={{ height: 5000, radius: 4000, scale: 20000 }}
-          /> */}
             {/* <directionalLight position={[1, 1, 1]} /> */}
             <Actor />
             <RockObstacle />
-            <OrbitControls makeDefault />
+            <OrbitControls
+              makeDefault
+              enableRotate={true}
+            />
             <Navmesh />
             <TransformController />
           </Canvas>

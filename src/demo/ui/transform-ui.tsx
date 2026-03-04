@@ -14,7 +14,13 @@ const TransformUI: React.FC = () => {
         followPathSteetingBehavior, setFollowPathSteetingBehavior,
         withEchoPath, setWithEchoPath
     } = useGameStore()
-
+    React.useEffect(() => {
+        if (obstacleAvoidance) {
+            setFollowPathSteetingBehavior(30)
+        } else {
+            setFollowPathSteetingBehavior(1)
+        }
+    }, [obstacleAvoidance])
     return (
         <>
             <Card className="fixed top-20 left-4 z-40 w-72 bg-background/60 backdrop-blur-lg border-primary/10 shadow-xl transition-all hover:bg-background/80">

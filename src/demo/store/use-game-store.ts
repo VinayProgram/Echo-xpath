@@ -46,7 +46,7 @@ interface GameState {
 }
 
 export const useGameStore = create<GameState>((set) => ({
-    obstacleAvoidance: true,
+    obstacleAvoidance: false,
     setObstacleAvoidance: (value) => set({ obstacleAvoidance: value }),
     isTransforming: false,
     setIsTransforming: (value) => set({ isTransforming: value }),
