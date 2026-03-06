@@ -1,10 +1,8 @@
 import { Canvas } from '@react-three/fiber'
-import { Line, OrbitControls } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
 import TransformUI from '../../common/ui/transform-ui'
 import PathMetricsUI from '../../common/ui/path-metrics-ui'
 import Navbar from '../../components/Navbar'
-import EchoPath from '@/utils/echopath-smooth'
-import * as THREE from 'three'
 import FlightLauncher from './flight-launcher'
 import Obstacle from './obstacle'
 

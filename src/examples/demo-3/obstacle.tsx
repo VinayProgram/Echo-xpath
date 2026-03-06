@@ -1,7 +1,7 @@
 import EchoPath from '@/utils/echopath-smooth'
 import { Line } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import React, { useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 
 const MovingCone = ({ points }: { points: number[][] }) => {
@@ -10,7 +10,7 @@ const MovingCone = ({ points }: { points: number[][] }) => {
 
     const pathVectors = useMemo(() => points.map(p => new THREE.Vector3(...p)), [points])
 
-    useFrame((state, delta) => {
+    useFrame((_, delta) => {
         if (!meshRef.current || pathVectors.length < 2) return
 
         const speed = 10
@@ -77,7 +77,7 @@ const Obstacle = () => {
                     />
                 </mesh>
             ))}
-            <Line points={echoPath.map((point) => [point[0], point[1], point[2]])} color="blue" lineWidth={2} />
+            <Line points={echoPath.map((point: number[]) => [point[0], point[1], point[2]])} color="blue" lineWidth={2} />
             <MovingCone points={echoPath} />
         </>
     )
