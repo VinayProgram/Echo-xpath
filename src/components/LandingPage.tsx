@@ -35,7 +35,7 @@ const LandingPage = () => {
                 <div className="container mx-auto px-6 text-center">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-sm font-medium text-cyan-400 mb-8 animate-fade-in">
                         <Zap size={14} className="fill-current" />
-                        <span>v2.1.0 is now live</span>
+                        <span>v1.0.0 is now live</span>
                     </div>
                     <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-8 bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">
                         Smooth Paths.<br />Smart Navigation.

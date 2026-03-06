@@ -39,7 +39,6 @@ const ImprovementBadge: React.FC<{ label: string; value: string; color: string; 
 const PathMetricsUI: React.FC = () => {
     const pathMetrics = useGameStore((state) => state.pathMetrics);
     const { showPathMetricsUI, setShowPathMetricsUI } = useGameStore();
-
     if (!showPathMetricsUI) return null;
 
     return (
