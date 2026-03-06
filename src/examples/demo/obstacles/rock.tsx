@@ -60,7 +60,6 @@ const RockObstacles = ({ count = 40 }) => {
 
     useEffect(() => {
         obstacles.forEach((x) => {
-            console.log(x.mesh)
             scene.add(x.mesh)
             entityManager.add(x.entity)
         })

@@ -72,7 +72,7 @@ export const useGameStore = create<GameState>((set) => ({
     followPathSteetingBehavior: 1,
     setFollowPathSteetingBehavior: (value) => set({ followPathSteetingBehavior: value }),
     vehicleConfig: {
-        maxSpeed: 10,
+        maxSpeed: 1,
         maxForce: 1,
         mass: 1
     },

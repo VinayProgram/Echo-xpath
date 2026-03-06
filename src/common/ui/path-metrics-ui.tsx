@@ -44,10 +44,10 @@ const PathMetricsUI: React.FC = () => {
 
     return (
         <Card className="fixed top-20 right-6 z-40 w-72 bg-slate-950/80 backdrop-blur-xl border-white/10 shadow-2xl overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400" />
+            <div className="absolute top-0 left-0 w-full h-1 bg-blue-600" />
             <CardHeader className="pb-2 pt-5">
                 <div className="flex justify-between items-center">
-                    <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400 flex items-center gap-2">
+                    <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400 flex items-center gap-2">
                         <Activity className="w-3 h-3" />
                         EchoPath Analytics
                     </CardTitle>
@@ -59,10 +59,10 @@ const PathMetricsUI: React.FC = () => {
                         )}
                         <button
                             onClick={() => setShowPathMetricsUI(false)}
-                            className="rounded-md p-1 opacity-50 hover:opacity-100 hover:bg-white/10 transition-all"
+                            className="rounded-md p-1  hover:opacity-100 hover:bg-white/10 transition-all "
                             aria-label="Close Path Metrics"
                         >
-                            <X className="w-3.5 h-3.5" />
+                            <X className="w-3.5 h-3.5" color='white' />
                         </button>
                     </div>
                 </div>
@@ -82,27 +82,27 @@ const PathMetricsUI: React.FC = () => {
                             raw={pathMetrics.raw.curvature.toFixed(1)}
                             smooth={pathMetrics.smooth.curvature.toFixed(1)}
                             unit="°"
-                            color="#10b981"
+                            color="#60a5fa"
                         />
                         <MetricRow
                             label="Jerk Integral"
                             raw={pathMetrics.raw.jerk.toFixed(0)}
                             smooth={pathMetrics.smooth.jerk.toFixed(0)}
                             unit="ΣΔ"
-                            color="#f59e0b"
+                            color="#93c5fd"
                         />
 
                         <div className="mt-4 flex gap-2">
                             <ImprovementBadge
                                 label="Curvature"
                                 value={pathMetrics.improvement.curvatureReduction}
-                                color="#10b981"
+                                color="#60a5fa"
                                 icon={<TrendingDown className="w-2.5 h-2.5" />}
                             />
                             <ImprovementBadge
                                 label="Jerk"
                                 value={pathMetrics.improvement.jerkReduction}
-                                color="#f59e0b"
+                                color="#93c5fd"
                                 icon={<Zap className="w-2.5 h-2.5" />}
                             />
                         </div>
