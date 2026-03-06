@@ -58,9 +58,9 @@ const Navmesh = () => {
           if (navMesh && !isTransforming) {
             setTarget(e.point)
             setHasTarget(true)
-            const { visualPoints, rawPathPointsArray } = gotoTargetPath(e.point, playerVehicle, navMesh, obstacles, withEchoPath, obstacleAvoidance, followPathSteetingBehavior)!
+            const { visualPoints, rawPath, smoothPath } = gotoTargetPath(e.point, playerVehicle, navMesh, obstacles, withEchoPath, obstacleAvoidance, followPathSteetingBehavior)!
             setVisualPath(visualPoints)
-            setPathMetrics(PathMetrics.compare(rawPathPointsArray, visualPoints))
+            setPathMetrics(PathMetrics.compare(rawPath, smoothPath))
           }
         }}
       >

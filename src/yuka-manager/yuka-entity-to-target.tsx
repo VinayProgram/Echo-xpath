@@ -16,11 +16,9 @@ export const gotoTargetPath = (target: THREE.Vector3,
     const pathPoints = navMesh.findPath(start, end)
     if (!pathPoints || pathPoints.length === 0) return console.log('no path')
 
-    const { path, pointsArray } = withEchoPathHelper(pathPoints, withEchoPath)
+    const { path, rawPath, smoothPath, pointsToUse } = withEchoPathHelper(pathPoints, withEchoPath)
 
-    const visualPoints = pointsArray.map(p => new THREE.Vector3(p[0], p[1] + 0.1, p[2]))
-
-    const rawPathPointsArray = pathPoints.map(p => [p.x, p.y, p.z])
+    const visualPoints = pointsToUse.map(p => new THREE.Vector3(p[0], p[1] + 0.1, p[2]))
 
     playerVehicle.steering.clear()
     if (obstacleAvoidance) {
@@ -28,24 +26,27 @@ export const gotoTargetPath = (target: THREE.Vector3,
     }
     playerVehicle.steering.add(new YUKA.FollowPathBehavior(path, followPathSteetingBehavior))
     playerVehicle.steering.add(new YUKA.ArriveBehavior(end, 0.5))
-    return { visualPoints, rawPathPointsArray }
+    return { visualPoints, rawPath, smoothPath, pointsToUse }
 }
 
 export const withEchoPathHelper = (pathPoints: YUKA.Vector3[], withEchoPath: boolean) => {
     const path = new YUKA.Path()
-    let pointsArray: number[][] = []
 
-    if (withEchoPath) {
-        pointsArray = EchoPath.smooth(pathPoints.map(p => [p.x, p.y, p.z]))
-        pointsArray.forEach((p) => {
-            path.add(new YUKA.Vector3(p[0], p[1], p[2]))
-        })
-    } else {
-        pointsArray = pathPoints.map(p => [p.x, p.y, p.z])
-        pathPoints.forEach(p => {
-            path.add(p)
-        })
+    const rawPath: number[][] = pathPoints.map(p => [p.x, p.y, p.z])
+
+    // Always compute smooth path
+    const smoothPath: number[][] = EchoPath.smooth(rawPath)
+
+    const pointsToUse = withEchoPath ? smoothPath : rawPath
+
+    pointsToUse.forEach((p) => {
+        path.add(new YUKA.Vector3(p[0], p[1], p[2]))
+    })
+
+    return {
+        path,
+        rawPath,
+        smoothPath,
+        pointsToUse
     }
-
-    return { path, pointsArray }
 }

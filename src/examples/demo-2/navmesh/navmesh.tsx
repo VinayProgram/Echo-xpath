@@ -20,10 +20,9 @@ const Navmesh2 = (props: any) => {
             <mesh {...props} visible={!props.hidden}
                 onClick={(e) => {
                     if (navMesh) {
-                        const { visualPoints, rawPathPointsArray } = gotoTargetPath(e.point, playerVehicle, navMesh, obstacles, withEchoPath, obstacleAvoidance, followPathSteetingBehavior)!
-                        console.log(visualPoints, rawPathPointsArray)
+                        const { visualPoints, rawPath, smoothPath } = gotoTargetPath(e.point, playerVehicle, navMesh, obstacles, withEchoPath, obstacleAvoidance, followPathSteetingBehavior)!
                         setVisualPath(visualPoints)
-                        setPathMetrics(PathMetrics.compare(rawPathPointsArray, visualPoints))
+                        setPathMetrics(PathMetrics.compare(rawPath, smoothPath))
                     }
                 }}>
                 <primitive object={scene} />
