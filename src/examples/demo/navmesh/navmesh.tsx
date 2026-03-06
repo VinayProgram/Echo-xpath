@@ -17,10 +17,14 @@ const Navmesh = () => {
   const setDebugPoints = useGameStore((state) => state.setDebugPoints)
   const setPathMetrics = useGameStore((state) => state.setPathMetrics)
   const followPathSteetingBehavior = useGameStore((state) => state.followPathSteetingBehavior)
-  const { obstacleAvoidance, withEchoPath } = useGameStore()
+  const { obstacleAvoidance, withEchoPath, showBothPaths } = useGameStore()
   const [targetp, setTarget] = React.useState<THREE.Vector3>(new THREE.Vector3(0, 0, 0))
   const [hasTarget, setHasTarget] = React.useState(false)
-  const [visualPath, setVisualPath] = React.useState<THREE.Vector3[]>([])
+  const [visualPath, setVisualPath] = React.useState<{
+    smoothVP: THREE.Vector3[],
+    rawVP: THREE.Vector3[],
+    actualVP: THREE.Vector3[]
+  }>({ smoothVP: [], rawVP: [], actualVP: [] })
 
   const isTransforming = useGameStore((state) => state.isTransforming);
   const ref = useRef<THREE.Mesh>(null)
@@ -58,8 +62,12 @@ const Navmesh = () => {
           if (navMesh && !isTransforming) {
             setTarget(e.point)
             setHasTarget(true)
-            const { visualPoints, rawPath, smoothPath } = gotoTargetPath(e.point, playerVehicle, navMesh, obstacles, withEchoPath, obstacleAvoidance, followPathSteetingBehavior)!
-            setVisualPath(visualPoints)
+            const { rawvisualPoints, smoothvisualPoints, rawPath, smoothPath, actualVisualPath } = gotoTargetPath(e.point, playerVehicle, navMesh, obstacles, withEchoPath, obstacleAvoidance, followPathSteetingBehavior)!
+            setVisualPath({
+              rawVP: rawvisualPoints,
+              smoothVP: smoothvisualPoints,
+              actualVP: actualVisualPath
+            })
             setPathMetrics(PathMetrics.compare(rawPath, smoothPath))
           }
         }}
@@ -99,14 +107,33 @@ const Navmesh = () => {
 
       {/* {debugPoints && <primitive object={debugPoints} />} */}
 
+      {
+        visualPath.actualVP.length > 0 && !showBothPaths && (
+          <Line
+            points={visualPath.actualVP}
+            color="#00f3ff"
+            lineWidth={3}
+            transparent
+            opacity={0.8}
+          />
+        )
+      }
       {/* Path Visualization */}
-      {visualPath.length > 0 && (
+      {visualPath.rawVP.length > 0 && showBothPaths && (
         <Line
-          points={visualPath}
+          points={visualPath.rawVP}
           color="#00f3ff"
           lineWidth={3}
           transparent
           opacity={0.8}
+        />
+      )}
+
+      {visualPath.smoothVP.length > 0 && showBothPaths && (
+        <Line
+          points={visualPath.smoothVP}
+          color="#ff0000ff"
+          lineWidth={3}
         />
       )}
     </>

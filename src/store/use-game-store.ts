@@ -54,9 +54,14 @@ interface GameState {
     setShowTransformUI: (value: boolean) => void
     showPathMetricsUI: boolean
     setShowPathMetricsUI: (value: boolean) => void
+
+    showBothPaths: boolean
+    setShowBothPaths: (value: boolean) => void
 }
 
 export const useGameStore = create<GameState>((set) => ({
+    showBothPaths: false,
+    setShowBothPaths: (value) => set({ showBothPaths: value }),
     obstacleAvoidance: false,
     setObstacleAvoidance: (value) => set({ obstacleAvoidance: value }),
     isTransforming: false,

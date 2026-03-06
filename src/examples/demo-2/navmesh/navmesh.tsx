@@ -11,32 +11,58 @@ import PathMetrics from '@/utils/path-metrics'
 const Navmesh2 = (props: any) => {
     const { scene } = useLoader(GLTFLoader, props.url) as any
     const { playerVehicle, obstacles } = useYuka()
-    const { withEchoPath, obstacleAvoidance, followPathSteetingBehavior, setPathMetrics } = useGameStore()
+    const { withEchoPath, obstacleAvoidance, followPathSteetingBehavior, setPathMetrics, showBothPaths } = useGameStore()
     const { navigationMesh: navMesh } = useNavmeshHelper({ geo: null, path: "/navmesh.glb" })
-    const [visualPath, setVisualPath] = React.useState<THREE.Vector3[]>([])
+    const [visualPath, setVisualPath] = React.useState<{
+        smoothVP: THREE.Vector3[],
+        rawVP: THREE.Vector3[],
+        actualVP: THREE.Vector3[]
+    }>({ smoothVP: [], rawVP: [], actualVP: [] })
+
 
     return (
         <>
             <mesh {...props} visible={!props.hidden}
                 onClick={(e) => {
                     if (navMesh) {
-                        const { visualPoints, rawPath, smoothPath } = gotoTargetPath(e.point, playerVehicle, navMesh, obstacles, withEchoPath, obstacleAvoidance, followPathSteetingBehavior)!
-                        setVisualPath(visualPoints)
+                        const { rawvisualPoints, smoothvisualPoints, rawPath, smoothPath, actualVisualPath } = gotoTargetPath(e.point, playerVehicle, navMesh, obstacles, withEchoPath, obstacleAvoidance, followPathSteetingBehavior)!
+                        setVisualPath({ rawVP: rawvisualPoints, smoothVP: smoothvisualPoints, actualVP: actualVisualPath })
                         setPathMetrics(PathMetrics.compare(rawPath, smoothPath))
                     }
                 }}>
                 <primitive object={scene} />
             </mesh>
 
-            {visualPath.length > 0 && (
+            {
+                visualPath.actualVP.length > 0 && !showBothPaths && (
+                    <Line
+                        points={visualPath.actualVP}
+                        color="#00f3ff"
+                        lineWidth={3}
+                        transparent
+                        opacity={0.8}
+                    />
+                )
+            }
+            {visualPath.rawVP.length > 0 && showBothPaths && (
                 <Line
-                    points={visualPath}
+                    points={visualPath.rawVP}
                     color="#00f3ff"
                     lineWidth={3}
                     transparent
                     opacity={0.8}
                 />
             )}
+            {visualPath.smoothVP.length > 0 && showBothPaths && (
+                <Line
+                    points={visualPath.smoothVP}
+                    color="#ff0000ff"
+                    lineWidth={3}
+                    transparent
+                    opacity={0.8}
+                />
+            )}
+
         </>
     )
 }

@@ -18,15 +18,16 @@ export const gotoTargetPath = (target: THREE.Vector3,
 
     const { path, rawPath, smoothPath, pointsToUse } = withEchoPathHelper(pathPoints, withEchoPath)
 
-    const visualPoints = pointsToUse.map(p => new THREE.Vector3(p[0], p[1] + 0.1, p[2]))
-
+    const rawvisualPoints = rawPath.map(p => new THREE.Vector3(p[0], p[1] + 0.1, p[2]))
+    const smoothvisualPoints = smoothPath.map(p => new THREE.Vector3(p[0], p[1] + 0.1, p[2]))
+    const actualVisualPath = pointsToUse.map(p => new THREE.Vector3(p[0], p[1] + 0.1, p[2]))
     playerVehicle.steering.clear()
     if (obstacleAvoidance) {
         playerVehicle.steering.add(new YUKA.ObstacleAvoidanceBehavior(obstacles.map(x => x.entity)))
     }
     playerVehicle.steering.add(new YUKA.FollowPathBehavior(path, followPathSteetingBehavior))
     playerVehicle.steering.add(new YUKA.ArriveBehavior(end, 0.5))
-    return { visualPoints, rawPath, smoothPath, pointsToUse }
+    return { rawvisualPoints, smoothvisualPoints, rawPath, smoothPath, pointsToUse, actualVisualPath }
 }
 
 export const withEchoPathHelper = (pathPoints: YUKA.Vector3[], withEchoPath: boolean) => {
@@ -47,6 +48,6 @@ export const withEchoPathHelper = (pathPoints: YUKA.Vector3[], withEchoPath: boo
         path,
         rawPath,
         smoothPath,
-        pointsToUse
+        pointsToUse,
     }
 }

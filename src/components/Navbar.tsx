@@ -73,7 +73,7 @@ const Navbar = () => {
                         Documentation
                     </span>
                     <Badge variant="outline" className="text-[10px] uppercase tracking-wider ml-1">
-                        v2.1.0-beta
+                        v1.0.0-beta
                     </Badge>
                 </div>
 

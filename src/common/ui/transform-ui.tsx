@@ -3,7 +3,7 @@ import { useGameStore } from '../../store/use-game-store';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Settings2, Gamepad2, Move, Video, Info, X } from "lucide-react";
+import { Settings2, Gamepad2, Move, Video, Info, X, PanelTopBottomDashedIcon } from "lucide-react";
 import { Switch } from '@/components/ui/switch';
 
 const TransformUI: React.FC = () => {
@@ -15,6 +15,7 @@ const TransformUI: React.FC = () => {
         withEchoPath, setWithEchoPath,
         vehicleConfig, setVehicleConfig,
         showTransformUI, setShowTransformUI,
+        showBothPaths, setShowBothPaths
     } = useGameStore()
     const [showAdvanced, setShowAdvanced] = React.useState(false);
 
@@ -50,7 +51,7 @@ const TransformUI: React.FC = () => {
                 <div className="flex items-center justify-between group transition-colors hover:bg-white/5 p-1 rounded-md">
                     <div className="flex items-center gap-2">
                         <Move className="w-3.5 h-3.5 opacity-50" />
-                        <Label htmlFor="transform-mode" className="text-sm cursor-pointer">Transform Mode</Label>
+                        <Label htmlFor="transform-mode" className="text-sm cursor-pointer">Edit Obstacles</Label>
                     </div>
                     <Switch
                         id="transform-mode"
@@ -92,6 +93,18 @@ const TransformUI: React.FC = () => {
                         id="camera-mode"
                         checked={cameraMode === 'firstPerson'}
                         onCheckedChange={(checked) => setCameraMode(checked ? 'firstPerson' : 'orbit')}
+                    />
+                </div>
+
+                <div className="flex items-center justify-between group transition-colors hover:bg-white/5 p-1 rounded-md">
+                    <div className="flex items-center gap-2">
+                        <PanelTopBottomDashedIcon className="w-3.5 h-3.5 opacity-50" />
+                        <Label htmlFor="show-both-paths" className="text-sm cursor-pointer">Show Both Paths</Label>
+                    </div>
+                    <Switch
+                        id="show-both-paths"
+                        checked={showBothPaths}
+                        onCheckedChange={(checked) => setShowBothPaths(checked)}
                     />
                 </div>
 
