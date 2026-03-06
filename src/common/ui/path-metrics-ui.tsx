@@ -2,7 +2,7 @@ import React from 'react';
 import { useGameStore } from '../../store/use-game-store';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Activity, Zap, TrendingDown, Target } from "lucide-react";
+import { Activity, Zap, TrendingDown, Target, X } from "lucide-react";
 
 const MetricRow: React.FC<{ label: string; raw: string | number; smooth: string | number; unit: string; color: string }> = ({ label, raw, smooth, unit, color }) => (
     <div className="flex flex-col py-3 border-b border-white/5 last:border-0">
@@ -38,6 +38,9 @@ const ImprovementBadge: React.FC<{ label: string; value: string; color: string; 
 
 const PathMetricsUI: React.FC = () => {
     const pathMetrics = useGameStore((state) => state.pathMetrics);
+    const { showPathMetricsUI, setShowPathMetricsUI } = useGameStore();
+
+    if (!showPathMetricsUI) return null;
 
     return (
         <Card className="fixed top-20 right-6 z-40 w-72 bg-slate-950/80 backdrop-blur-xl border-white/10 shadow-2xl overflow-hidden">
@@ -48,11 +51,20 @@ const PathMetricsUI: React.FC = () => {
                         <Activity className="w-3 h-3" />
                         EchoPath Analytics
                     </CardTitle>
-                    {pathMetrics && (
-                        <Badge variant="outline" className="text-[9px] h-4 px-1.5 bg-white/5 border-white/10 opacity-60 tabular-nums">
-                            {pathMetrics.smooth.points} PTS
-                        </Badge>
-                    )}
+                    <div className="flex items-center gap-2">
+                        {pathMetrics && (
+                            <Badge variant="outline" className="text-[9px] h-4 px-1.5 bg-white/5 border-white/10 opacity-60 tabular-nums">
+                                {pathMetrics.smooth.points} PTS
+                            </Badge>
+                        )}
+                        <button
+                            onClick={() => setShowPathMetricsUI(false)}
+                            className="rounded-md p-1 opacity-50 hover:opacity-100 hover:bg-white/10 transition-all"
+                            aria-label="Close Path Metrics"
+                        >
+                            <X className="w-3.5 h-3.5" />
+                        </button>
+                    </div>
                 </div>
             </CardHeader>
             <CardContent className="pt-2">

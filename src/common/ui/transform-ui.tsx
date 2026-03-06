@@ -3,7 +3,7 @@ import { useGameStore } from '../../store/use-game-store';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Settings2, Gamepad2, Move, Video, Info } from "lucide-react";
+import { Settings2, Gamepad2, Move, Video, Info, X } from "lucide-react";
 import { Switch } from '@/components/ui/switch';
 
 const TransformUI: React.FC = () => {
@@ -13,7 +13,8 @@ const TransformUI: React.FC = () => {
         cameraMode, setCameraMode,
         followPathSteetingBehavior, setFollowPathSteetingBehavior,
         withEchoPath, setWithEchoPath,
-        vehicleConfig, setVehicleConfig
+        vehicleConfig, setVehicleConfig,
+        showTransformUI, setShowTransformUI,
     } = useGameStore()
     const [showAdvanced, setShowAdvanced] = React.useState(false);
 
@@ -25,13 +26,24 @@ const TransformUI: React.FC = () => {
         }
     }, [obstacleAvoidance, setFollowPathSteetingBehavior])
 
+    if (!showTransformUI) return null;
+
     return (
         <Card className="fixed top-20 left-4 z-40 w-72 bg-background/60 backdrop-blur-lg border-primary/10 shadow-xl transition-all hover:bg-background/80 overflow-auto max-h-[calc(100vh-100px)]">
             <CardHeader className="pb-3 pt-4">
-                <CardTitle className="text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-2">
-                    <Settings2 className="w-4 h-4" />
-                    Simulation Controls
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                    <CardTitle className="text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-2">
+                        <Settings2 className="w-4 h-4" />
+                        Simulation Controls
+                    </CardTitle>
+                    <button
+                        onClick={() => setShowTransformUI(false)}
+                        className="rounded-md p-1 opacity-50 hover:opacity-100 hover:bg-white/10 transition-all"
+                        aria-label="Close Simulation Controls"
+                    >
+                        <X className="w-3.5 h-3.5" />
+                    </button>
+                </div>
                 <CardDescription className="text-[10px]">Configure real-time behaviors</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 py-2">
@@ -91,7 +103,7 @@ const TransformUI: React.FC = () => {
                         <Label className="text-[10px] font-semibold opacity-50 uppercase tracking-wider cursor-pointer">
                             Vehicle Config (Advanced)
                         </Label>
-                        <div className={`transition - transform duration - 200 ${showAdvanced ? 'rotate-180' : ''} `}>
+                        <div className={`transition-transform duration-200 ${showAdvanced ? 'rotate-180' : ''}`}>
                             <Settings2 className="w-3 h-3 opacity-50" />
                         </div>
                     </div>

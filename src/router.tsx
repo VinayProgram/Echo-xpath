@@ -3,6 +3,7 @@ import LandingPage from './components/LandingPage'
 import App from './examples/demo/Demo'
 import Demo2 from './examples/demo-2/Demo2'
 import { Suspense } from 'react'
+import Demo3 from './examples/demo-3/Demo-3'
 
 // Root Route
 const rootRoute = createRootRoute({
@@ -35,8 +36,15 @@ const demo2Route = createRoute({
     component: Demo2,
 })
 
+// Demo 3 Route
+const demo3Route = createRoute({
+    getParentRoute: () => rootRoute,
+    path: '/demo-3',
+    component: Demo3,
+})
+
 // Create Route Tree
-const routeTree = rootRoute.addChildren([indexRoute, demo1Route, demo2Route])
+const routeTree = rootRoute.addChildren([indexRoute, demo1Route, demo2Route, demo3Route])
 
 // Create Router
 export const router = createRouter({ routeTree })

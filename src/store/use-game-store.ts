@@ -50,6 +50,10 @@ interface GameState {
     setObstacleAvoidance: (value: boolean) => void
     vehicleConfig: VehicleConfig
     setVehicleConfig: (value: VehicleConfig) => void
+    showTransformUI: boolean
+    setShowTransformUI: (value: boolean) => void
+    showPathMetricsUI: boolean
+    setShowPathMetricsUI: (value: boolean) => void
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -72,5 +76,9 @@ export const useGameStore = create<GameState>((set) => ({
         maxForce: 1,
         mass: 1
     },
-    setVehicleConfig: (value) => set({ vehicleConfig: value })
+    setVehicleConfig: (value) => set({ vehicleConfig: value }),
+    showTransformUI: true,
+    setShowTransformUI: (value) => set({ showTransformUI: value }),
+    showPathMetricsUI: true,
+    setShowPathMetricsUI: (value) => set({ showPathMetricsUI: value }),
 }))

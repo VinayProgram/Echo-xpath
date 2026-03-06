@@ -1,38 +1,75 @@
 import { Link } from '@tanstack/react-router'
-import { ArrowRight, Zap, Target, Layers } from 'lucide-react'
+import { ArrowRight, Zap, Target, Layers, Car, Home, Rocket } from 'lucide-react'
+import { Card, CardContent } from "@/components/ui/card"
 
 const LandingPage = () => {
+    const demos = [
+        {
+            to: "/demo-1",
+            title: "Demo 1",
+            description: "Vehicle simulation with advanced path tracking",
+            icon: <Car className="w-8 h-8 text-blue-500" />,
+            bgColor: "bg-blue-500/10",
+        },
+        {
+            to: "/demo-2",
+            title: "Demo 2",
+            description: "Interior navigation and spatial awareness",
+            icon: <Home className="w-8 h-8 text-emerald-500" />,
+            bgColor: "bg-emerald-500/10",
+        },
+        {
+            to: "/demo-3",
+            title: "Demo 3",
+            description: "High-speed obstacle avoidance simulation",
+            icon: <Rocket className="w-8 h-8 text-purple-500" />,
+            bgColor: "bg-purple-500/10",
+        }
+    ]
+
     return (
         <div className="min-h-screen bg-[#050505] text-white selection:bg-cyan-500/30">
             {/* Hero Section */}
-            <header className="relative overflow-hidden pt-32 pb-20">
+            <header className="relative overflow-hidden pt-32 pb-16">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-cyan-900/20 blur-[120px] rounded-full -z-10" />
                 <div className="container mx-auto px-6 text-center">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-sm font-medium text-cyan-400 mb-8 animate-fade-in">
                         <Zap size={14} className="fill-current" />
-                        <span>v1.0.0 is now live</span>
+                        <span>v2.1.0 is now live</span>
                     </div>
-                    <h1 className="text-6xl md:text-8xl font-bold tracking-tighter mb-8 bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">
+                    <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-8 bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">
                         Smooth Paths.<br />Smart Navigation.
                     </h1>
-                    <p className="max-w-2xl mx-auto text-xl text-zinc-400 mb-12 leading-relaxed">
+                    <p className="max-w-2xl mx-auto text-lg md:text-xl text-zinc-400 mb-16 leading-relaxed">
                         Echo-Xpath provides state-of-the-art path smoothing and navigation mesh solutions for modern web-based 3D applications.
                     </p>
-                    <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-                        <Link
-                            to="/demo-1"
-                            className="group relative px-8 py-4 bg-white text-black font-semibold rounded-xl overflow-hidden transition-all hover:scale-105 active:scale-95"
-                        >
-                            Explore Demo 1
-                            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity -z-10" />
-                        </Link>
-                        <Link
-                            to="/demo-2"
-                            className="px-8 py-4 bg-zinc-900 border border-white/10 font-semibold rounded-xl hover:bg-zinc-800 transition-all active:scale-95 flex items-center gap-2"
-                        >
-                            Explore Demo 2
-                            <ArrowRight size={18} />
-                        </Link>
+
+                    {/* Demo Cards Section */}
+                    <div className="flex flex-wrap justify-center gap-6 md:gap-8 max-w-6xl mx-auto px-4">
+                        {demos.map((demo, index) => (
+                            <Link
+                                key={index}
+                                to={demo.to}
+                                className="group flex-1 min-w-[280px] max-w-[350px]"
+                            >
+                                <Card className="bg-zinc-900/50 border-white/10 hover:border-cyan-500/50 hover:bg-zinc-800/80 transition-all duration-300 h-full">
+                                    <CardContent className="p-8 flex flex-col items-center text-center">
+                                        <div className={`w-16 h-16 rounded-2xl ${demo.bgColor} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                                            {demo.icon}
+                                        </div>
+                                        <h3 className="text-xl font-bold mb-3 text-white transition-colors group-hover:text-cyan-400">
+                                            {demo.title}
+                                        </h3>
+                                        <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+                                            {demo.description}
+                                        </p>
+                                        <div className="mt-auto flex items-center gap-2 text-cyan-400 text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
+                                            Launch Experience <ArrowRight size={14} />
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </Link>
+                        ))}
                     </div>
                 </div>
             </header>
