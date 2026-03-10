@@ -10,7 +10,9 @@ import TransformController from './transform-controller/transform-controller'
 import { Loader } from '../../common/ui/loader'
 import { Suspense } from 'react'
 
+import { useGameStore } from '../../store/use-game-store'
 function Demo() {
+  const cameraMode = useGameStore((state) => state.cameraMode);
 
   return (
     <div className="dark relative w-screen h-screen overflow-hidden text-foreground bg-background">
@@ -32,7 +34,8 @@ function Demo() {
           </Suspense>
           <OrbitControls
             makeDefault
-            enableRotate={true}
+            enableRotate={cameraMode !== 'none'}
+            enabled={cameraMode !== 'none'}
           />
           <Navmesh />
           <TransformController />

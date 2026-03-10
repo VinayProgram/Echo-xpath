@@ -118,22 +118,27 @@ const Navmesh = () => {
           />
         )
       }
-      {/* Path Visualization */}
+      {/* Path Visualization Compare Mode */}
       {visualPath.rawVP.length > 0 && showBothPaths && (
         <Line
           points={visualPath.rawVP}
-          color="#00f3ff"
-          lineWidth={3}
+          color="#ffffff"
+          lineWidth={2}
           transparent
-          opacity={0.8}
+          opacity={0.3}
+          dashed
+          dashSize={0.5}
+          gapSize={0.5}
         />
       )}
 
       {visualPath.smoothVP.length > 0 && showBothPaths && (
         <Line
           points={visualPath.smoothVP}
-          color="#ff0000ff"
+          color="#00f3ff"
           lineWidth={3}
+          transparent
+          opacity={0.9}
         />
       )}
     </>

@@ -8,19 +8,19 @@ const MetricRow: React.FC<{ label: string; raw: string | number; smooth: string 
     <div className="flex flex-col py-3 border-b border-white/5 last:border-0">
         <div className="flex items-center gap-2 mb-2">
             <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color, boxShadow: `0 0 8px ${color}` }} />
-            <span className="text-[10px] font-bold uppercase tracking-wider opacity-60">{label}</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-white/90">{label}</span>
         </div>
         <div className="flex justify-between items-baseline">
             <div className="flex items-baseline gap-1.5">
-                <span className="text-[9px] uppercase opacity-30 font-bold">Raw</span>
-                <span className="text-xs font-medium opacity-50 tabular-nums">{raw}</span>
+                <span className="text-[9px] uppercase text-white/40 font-bold">Raw</span>
+                <span className="text-xs font-medium text-white/60 tabular-nums">{raw}</span>
             </div>
             <div className="flex items-baseline gap-1.5">
-                <span className="text-[9px] uppercase font-bold" style={{ color }}>Smooth</span>
+                <span className="text-[9px] uppercase font-bold text-white/80">Smooth</span>
                 <span className="text-sm font-black text-white tabular-nums drop-shadow-md">
                     {smooth}
                 </span>
-                <span className="text-[10px] opacity-30 font-medium">{unit}</span>
+                <span className="text-[10px] text-white/40 font-medium">{unit}</span>
             </div>
         </div>
     </div>
@@ -28,31 +28,31 @@ const MetricRow: React.FC<{ label: string; raw: string | number; smooth: string 
 
 const ImprovementBadge: React.FC<{ label: string; value: string; color: string; icon: React.ReactNode }> = ({ label, value, color, icon }) => (
     <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-white/5 border border-white/5 flex-1 transition-all hover:bg-white/10">
-        <div className="flex items-center gap-1.5 mb-1 opacity-50">
+        <div className="flex items-center gap-1.5 mb-1 text-white/60">
             {icon}
             <span className="text-[8px] font-bold uppercase tracking-widest">{label}</span>
         </div>
-        <span className="text-sm font-black" style={{ color }}>-{value}</span>
+        <span className="text-sm font-black text-white">-{value}</span>
     </div>
 )
 
 const PathMetricsUI: React.FC = () => {
     const pathMetrics = useGameStore((state) => state.pathMetrics);
-    const { showPathMetricsUI, setShowPathMetricsUI } = useGameStore();
-    if (!showPathMetricsUI) return null;
+    const { showPathMetricsUI, setShowPathMetricsUI, cinematicMode, showBothPaths } = useGameStore();
+    if (!showPathMetricsUI || cinematicMode) return null;
 
     return (
         <Card className="fixed top-20 right-6 z-40 w-72 bg-slate-950/80 backdrop-blur-xl border-white/10 shadow-2xl overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-1 bg-blue-600" />
             <CardHeader className="pb-2 pt-5">
                 <div className="flex justify-between items-center">
-                    <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400 flex items-center gap-2">
-                        <Activity className="w-3 h-3" />
+                    <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-white flex items-center gap-2">
+                        <Activity className="w-3 h-3 text-blue-400" />
                         EchoPath Analytics
                     </CardTitle>
                     <div className="flex items-center gap-2">
                         {pathMetrics && (
-                            <Badge variant="outline" className="text-[9px] h-4 px-1.5 bg-white/5 border-white/10 opacity-60 tabular-nums">
+                            <Badge variant="outline" className="text-[9px] h-4 px-1.5 bg-white/5 border-white/10 text-white tabular-nums">
                                 {pathMetrics.smooth.points} PTS
                             </Badge>
                         )}
@@ -105,6 +105,19 @@ const PathMetricsUI: React.FC = () => {
                                 icon={<Zap className="w-2.5 h-2.5" />}
                             />
                         </div>
+
+                        {showBothPaths && (
+                            <div className="mt-6 pt-4 border-t border-white/5 space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-3 h-1 bg-white/30 rounded-full border border-white/20" style={{ borderStyle: 'dashed' }} />
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-white/60">Original (Raw)</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-3 h-1 bg-cyan-400 rounded-full shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-white">EchoPath (Smooth)</span>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 ) : (
                     <div className="py-10 flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-xl gap-3">

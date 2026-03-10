@@ -3,7 +3,7 @@ import { useGameStore } from '../../store/use-game-store';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Settings2, Gamepad2, Move, Video, Info, X, PanelTopBottomDashedIcon } from "lucide-react";
+import { Settings2, Gamepad2, Move, Video, Info, X, PanelTopBottomDashedIcon, Activity } from "lucide-react";
 import { Switch } from '@/components/ui/switch';
 
 const TransformUI: React.FC = () => {
@@ -15,7 +15,9 @@ const TransformUI: React.FC = () => {
         withEchoPath, setWithEchoPath,
         vehicleConfig, setVehicleConfig,
         showTransformUI, setShowTransformUI,
-        showBothPaths, setShowBothPaths
+        showBothPaths, setShowBothPaths,
+        cinematicMode, setCinematicMode,
+        setShowPathMetricsUI
     } = useGameStore()
     const [showAdvanced, setShowAdvanced] = React.useState(false);
 
@@ -27,7 +29,7 @@ const TransformUI: React.FC = () => {
         }
     }, [obstacleAvoidance, setFollowPathSteetingBehavior])
 
-    if (!showTransformUI) return null;
+    if (!showTransformUI || cinematicMode) return null;
 
     return (
         <Card className="fixed top-20 left-4 z-40 w-72 bg-background/60 backdrop-blur-lg border-primary/10 shadow-xl transition-all hover:bg-background/80 overflow-auto max-h-[calc(100vh-100px)]">
@@ -98,14 +100,56 @@ const TransformUI: React.FC = () => {
 
                 <div className="flex items-center justify-between group transition-colors hover:bg-white/5 p-1 rounded-md">
                     <div className="flex items-center gap-2">
-                        <PanelTopBottomDashedIcon className="w-3.5 h-3.5 opacity-50" />
-                        <Label htmlFor="show-both-paths" className="text-sm cursor-pointer">Show Both Paths</Label>
+                        <PanelTopBottomDashedIcon className="w-3.5 h-3.5 opacity-50 text-blue-400" />
+                        <div className="flex flex-col">
+                            <Label htmlFor="show-both-paths" className="text-sm cursor-pointer">Compare Paths</Label>
+                            <span className="text-[9px] opacity-40">Raw vs Smooth</span>
+                        </div>
                     </div>
                     <Switch
                         id="show-both-paths"
                         checked={showBothPaths}
                         onCheckedChange={(checked) => setShowBothPaths(checked)}
                     />
+                </div>
+
+                <div className="space-y-4 pt-2 border-t border-white/5">
+                    <Label className="text-[10px] font-semibold opacity-50 uppercase tracking-wider">
+                        Camera & Presentation
+                    </Label>
+
+                    <div className="flex items-center justify-between group transition-colors hover:bg-white/5 p-1 rounded-md">
+                        <div className="flex items-center gap-2">
+                            <Video className="w-3.5 h-3.5 opacity-50" />
+                            <Label htmlFor="lock-camera" className="text-sm cursor-pointer">Lock Camera</Label>
+                        </div>
+                        <Switch
+                            id="lock-camera"
+                            checked={cameraMode === 'none'}
+                            onCheckedChange={(checked) => setCameraMode(checked ? 'none' : 'orbit')}
+                        />
+                    </div>
+
+                    <div className="flex items-center justify-between group transition-colors hover:bg-white/5 p-1 rounded-md">
+                        <div className="flex items-center gap-2">
+                            <Activity className="w-3.5 h-3.5 opacity-50 text-red-500" />
+                            <div className="flex flex-col">
+                                <Label htmlFor="cinematic-mode" className="text-sm cursor-pointer font-bold">Record Mode</Label>
+                                <span className="text-[9px] opacity-40 text-red-400">Hide UI for recordings</span>
+                            </div>
+                        </div>
+                        <Switch
+                            id="cinematic-mode"
+                            checked={cinematicMode}
+                            onCheckedChange={(checked) => {
+                                setCinematicMode(checked);
+                                if (checked) {
+                                    setCameraMode('none');
+                                    setShowPathMetricsUI(false);
+                                }
+                            }}
+                        />
+                    </div>
                 </div>
 
                 <div className="space-y-2 pt-2 border-t border-white/5">

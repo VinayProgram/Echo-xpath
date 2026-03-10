@@ -36,8 +36,8 @@ export interface VehicleConfig {
 interface GameState {
     isTransforming: boolean
     setIsTransforming: (value: boolean) => void
-    cameraMode: 'orbit' | 'firstPerson'
-    setCameraMode: (mode: 'orbit' | 'firstPerson') => void
+    cameraMode: 'orbit' | 'firstPerson' | 'none'
+    setCameraMode: (mode: 'orbit' | 'firstPerson' | 'none') => void
     debugPoints: THREE.Points | null
     setDebugPoints: (value: THREE.Points | null) => void
     pathMetrics: PathMetrics | null
@@ -57,11 +57,16 @@ interface GameState {
 
     showBothPaths: boolean
     setShowBothPaths: (value: boolean) => void
+
+    cinematicMode: boolean
+    setCinematicMode: (value: boolean) => void
 }
 
 export const useGameStore = create<GameState>((set) => ({
     showBothPaths: false,
     setShowBothPaths: (value) => set({ showBothPaths: value }),
+    cinematicMode: false,
+    setCinematicMode: (value) => set({ cinematicMode: value }),
     obstacleAvoidance: false,
     setObstacleAvoidance: (value) => set({ obstacleAvoidance: value }),
     isTransforming: false,
@@ -82,7 +87,7 @@ export const useGameStore = create<GameState>((set) => ({
         mass: 1
     },
     setVehicleConfig: (value) => set({ vehicleConfig: value }),
-    showTransformUI: true,
+    showTransformUI: false,
     setShowTransformUI: (value) => set({ showTransformUI: value }),
     showPathMetricsUI: true,
     setShowPathMetricsUI: (value) => set({ showPathMetricsUI: value }),
