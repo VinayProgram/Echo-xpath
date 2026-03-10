@@ -26,7 +26,7 @@ const MetricRow: React.FC<{ label: string; raw: string | number; smooth: string 
     </div>
 );
 
-const ImprovementBadge: React.FC<{ label: string; value: string; color: string; icon: React.ReactNode }> = ({ label, value, color, icon }) => (
+const ImprovementBadge: React.FC<{ label: string; value: string; icon: React.ReactNode }> = ({ label, value, icon }) => (
     <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-white/5 border border-white/5 flex-1 transition-all hover:bg-white/10">
         <div className="flex items-center gap-1.5 mb-1 text-white/60">
             {icon}
@@ -95,13 +95,11 @@ const PathMetricsUI: React.FC = () => {
                             <ImprovementBadge
                                 label="Curvature"
                                 value={pathMetrics.improvement.curvatureReduction}
-                                color="#60a5fa"
                                 icon={<TrendingDown className="w-2.5 h-2.5" />}
                             />
                             <ImprovementBadge
                                 label="Jerk"
                                 value={pathMetrics.improvement.jerkReduction}
-                                color="#93c5fd"
                                 icon={<Zap className="w-2.5 h-2.5" />}
                             />
                         </div>
