@@ -24,6 +24,13 @@ const LandingPage = () => {
             description: "High-speed obstacle avoidance simulation",
             icon: <Rocket className="w-8 h-8 text-purple-500" />,
             bgColor: "bg-purple-500/10",
+        },
+        {
+            to: "/hunt",
+            title: "Demo 4",
+            description: "Enemy AI with path following",
+            icon: <Rocket className="w-8 h-8 text-purple-500" />,
+            bgColor: "bg-purple-500/10",
         }
     ]
 
