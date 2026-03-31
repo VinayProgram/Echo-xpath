@@ -2,17 +2,38 @@ import { createRootRoute, createRoute, createRouter, Outlet } from '@tanstack/re
 import LandingPage from './components/LandingPage'
 import App from './examples/demo/Demo'
 import Demo2 from './examples/demo-2/Demo2'
-import { Suspense } from 'react'
+import { Suspense, useMemo } from 'react'
 import Demo3 from './examples/demo-3/Demo-3'
-import Demo4 from './examples/demo-4/page'
+import Demo4 from './examples/demo-4/Demo'
+import { KeyboardControls, type KeyboardControlsEntry } from '@react-three/drei'
 
+//@ts-ignore
+export enum ControlsType {
+    forward = 'forward',
+    back = 'back',
+    left = 'left',
+    right = 'right',
+    jump = 'jump',
+}
 // Root Route
 const rootRoute = createRootRoute({
-    component: () => (
-        <Suspense fallback={<div>Loading...</div>}>
-            <Outlet />
-        </Suspense>
-    ),
+    component: () => {
+        const map = useMemo<KeyboardControlsEntry<ControlsType>[]>(() => [
+            { name: ControlsType.forward, keys: ['ArrowUp', 'KeyW'] },
+            { name: ControlsType.back, keys: ['ArrowDown', 'KeyS'] },
+            { name: ControlsType.left, keys: ['ArrowLeft', 'KeyA'] },
+            { name: ControlsType.right, keys: ['ArrowRight', 'KeyD'] },
+            { name: ControlsType.jump, keys: ['Space'] },
+        ], [])
+
+        return (
+            <Suspense fallback={<div>Loading...</div>}>
+                <KeyboardControls map={map}>
+                    <Outlet />
+                </KeyboardControls>
+            </Suspense>
+        )
+    },
 })
 
 // Index Route (Landing Page)

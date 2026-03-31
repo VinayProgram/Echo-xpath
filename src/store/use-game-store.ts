@@ -91,4 +91,5 @@ export const useGameStore = create<GameState>((set) => ({
     setShowTransformUI: (value) => set({ showTransformUI: value }),
     showPathMetricsUI: true,
     setShowPathMetricsUI: (value) => set({ showPathMetricsUI: value }),
+
 }))

@@ -17,6 +17,9 @@ interface YukaContextType {
         mesh: THREE.Object3D
     }[]>>;
     obstacleMeshRef: React.RefObject<THREE.Group[]>;
+
+    otherPlayerRef: React.RefObject<THREE.Group | null>;
+
 }
 
 
@@ -25,6 +28,7 @@ const YukaContext = createContext<YukaContextType | undefined>(undefined);
 
 export const YukaProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const characterRef = useRef<THREE.Group>(null);
+    const otherPlayerRef = useRef<THREE.Group>(null);
     const vehicleConfig = useGameStore((state) => state.vehicleConfig)
     const [obstacles, setObstacles] = useState<{
         entity: YUKA.GameEntity,
@@ -55,7 +59,8 @@ export const YukaProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         playerVehicle,
         obstacles,
         setObstacles,
-        obstacleMeshRef
+        obstacleMeshRef,
+        otherPlayerRef
     };
 
 
