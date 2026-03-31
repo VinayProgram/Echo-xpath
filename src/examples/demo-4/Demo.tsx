@@ -11,7 +11,7 @@ import { Loader } from '../../common/ui/loader'
 import { Suspense } from 'react'
 
 import { useGameStore } from '../../store/use-game-store'
-import Enemy from '../demo/Enemy'
+import Enemy from './Enemy'
 function Demo4() {
   const cameraMode = useGameStore((state) => state.cameraMode);
 

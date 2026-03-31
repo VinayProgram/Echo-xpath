@@ -38,7 +38,7 @@ const Navmesh = () => {
   }, [])
 
   const { navigationMesh: navMesh, debugPoints } = useNavmeshHelper({ geo: geometry })
-  React.useMemo(() => setDebugPoints(debugPoints), [debugPoints])
+  React.useMemo(() => setDebugPoints(debugPoints as any), [debugPoints])
 
   // Animate shader time uniform + target ring
   useFrame((_, delta) => {

@@ -20,6 +20,8 @@ interface YukaContextType {
 
     otherPlayerRef: React.RefObject<THREE.Group | null>;
 
+    navMeshRef: React.RefObject<YUKA.NavMesh | null>;
+
 }
 
 
@@ -30,6 +32,7 @@ export const YukaProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const characterRef = useRef<THREE.Group>(null);
     const otherPlayerRef = useRef<THREE.Group>(null);
     const vehicleConfig = useGameStore((state) => state.vehicleConfig)
+    const navMeshRef = useRef<YUKA.NavMesh | null>(null);
     const [obstacles, setObstacles] = useState<{
         entity: YUKA.GameEntity,
         mesh: THREE.Object3D
@@ -54,6 +57,7 @@ export const YukaProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 
     const value: YukaContextType = {
+        navMeshRef,
         characterRef,
         entityManager,
         playerVehicle,
