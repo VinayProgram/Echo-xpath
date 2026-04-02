@@ -1,6 +1,6 @@
 import { useYuka } from '@/yuka-manager/yuka-context'
 import { gotoTargetPath } from '@/yuka-manager/yuka-entity-to-target'
-import { Line } from '@react-three/drei'
+import { Line, useGLTF, useAnimations } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useMemo, useEffect, useRef, useState } from 'react'
 import * as YUKA from 'yuka'
@@ -8,8 +8,12 @@ import * as THREE from 'three'
 
 const Enemy = () => {
     const { entityManager, playerVehicle, navMeshRef, obstacles } = useYuka();
-    const meshRef = useRef<THREE.Mesh>(null);
+    const meshRef = useRef<THREE.Group>(null);
     const [pathPoints, setPathPoints] = useState<THREE.Vector3[]>([]);
+
+    // Load the model and animations
+    const { scene, animations } = useGLTF('/villan.glb');
+    const { actions } = useAnimations(animations, meshRef);
 
     // 1. Create the enemy vehicle once
     const enemy = useMemo(() => {
@@ -18,7 +22,7 @@ const Enemy = () => {
         vehicle.maxForce = 5;
         vehicle.mass = 1;
         // Set initial position
-        vehicle.position.set(5, 0, 5);
+        vehicle.position.set(15, 0, 15);
         return vehicle;
     }, []);
 
@@ -29,7 +33,7 @@ const Enemy = () => {
         enemy.setRenderComponent(meshRef.current, (entity, renderComponent) => {
             // Matrix sync
             //@ts-ignore
-            (renderComponent as THREE.Mesh).matrix.copy(entity.worldMatrix);
+            (renderComponent as THREE.Group).matrix.copy(entity.worldMatrix);
         });
 
         return () => {
@@ -37,6 +41,15 @@ const Enemy = () => {
             enemy.setRenderComponent(null, () => { });
         };
     }, [entityManager, enemy]);
+
+    // Play animation
+    useEffect(() => {
+        // Try to find a walking or idle animation, otherwise play the first one
+        const walkAnim = actions['Walk'] || actions['walking'] || actions['Run'] || Object.values(actions)[0];
+        if (walkAnim) {
+            walkAnim.reset().fadeIn(0.5).play();
+        }
+    }, [actions]);
 
     // 3. Update Loop
     const lastUpdateTime = useRef(0);
@@ -83,10 +96,9 @@ const Enemy = () => {
             )}
 
             {/* The Enemy Model */}
-            <mesh ref={meshRef} matrixAutoUpdate={false}>
-                <boxGeometry args={[0.6, 0.6, 0.6]} />
-                <meshBasicMaterial color="white" />
-            </mesh>
+            <group ref={meshRef} matrixAutoUpdate={false}>
+                <primitive object={scene} scale={0.01} />
+            </group>
         </>
     );
 }

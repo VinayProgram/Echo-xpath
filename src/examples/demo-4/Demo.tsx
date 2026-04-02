@@ -28,9 +28,9 @@ function Demo4() {
         >
           <ambientLight intensity={1} />
           <pointLight position={[10, 10, 10]} />
-          {/* <directionalLight position={[1, 1, 1]} /> */}
+          <directionalLight position={[1, 1, 1]} />
           <Suspense fallback={<Loader label="loading game" />}>
-            <RockObstacle />
+            <RockObstacle count={10} />
           </Suspense>
           <OrbitControls
             makeDefault
@@ -38,7 +38,7 @@ function Demo4() {
             enabled={cameraMode !== 'none'}
           />
           <Navmesh />
-          <Actor isPlayer={true} />
+          <Actor isPlayer={true} modelPath='/Running.glb' rotation={[0, 0, 0]} animationSpeedMultiplier={1} enableCollision={true} />
           <Enemy />
           <TransformController />
         </Canvas>

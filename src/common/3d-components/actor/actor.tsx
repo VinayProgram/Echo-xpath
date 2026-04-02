@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 import { useFrame, useLoader } from '@react-three/fiber'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three-stdlib'
@@ -6,6 +6,8 @@ import { useAnimations, useKeyboardControls } from '@react-three/drei'
 import * as YUKA from 'yuka'
 import { useGameStore } from '../../../store/use-game-store'
 import { useYuka } from '@/yuka-manager/yuka-context'
+import { useRaycasterCollision } from '@/hooks/use-raycaster-collision'
+
 interface ActorProps {
     modelPath?: string;
     scale?: number;
@@ -14,6 +16,7 @@ interface ActorProps {
     lookAtOffset?: THREE.Vector3;
     animationSpeedMultiplier?: number;
     isPlayer?: boolean; // New prop
+    enableCollision?: boolean; // New prop
 }
 
 const Actor = ({
@@ -23,7 +26,8 @@ const Actor = ({
     cameraOffset = new THREE.Vector3(0, 1.5, -3),
     lookAtOffset = new THREE.Vector3(0, 1, 5),
     animationSpeedMultiplier = 2,
-    isPlayer = false // Default to false
+    isPlayer = false, // Default to false
+    enableCollision = false // New prop
 }: ActorProps) => {
     const { characterRef, entityManager, playerVehicle, obstacles } = useYuka();
     const player = useLoader(GLTFLoader, modelPath);
@@ -31,6 +35,18 @@ const Actor = ({
     const isTransforming = useGameStore((state) => state.isTransforming)
     const cameraMode = useGameStore((state) => state.cameraMode)
     const [, getControls] = useKeyboardControls()
+
+    // 1. Convert obstacles to Object3D array for the hook
+    const obstacleMeshes = useMemo(() => obstacles.map(o => o.mesh), [obstacles]);
+
+    // 2. Use Raycaster Collision Hook
+    useRaycasterCollision({
+        characterRef,
+        playerVehicle,
+        enableCollision,
+        obstacles: obstacleMeshes,
+        distance: 1 // As requested
+    });
 
     useEffect(() => {
         if (!characterRef.current) return;
